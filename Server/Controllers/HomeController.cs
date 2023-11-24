@@ -6,16 +6,19 @@ namespace Server.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
+        private readonly SemiconductorContext ProcessDB;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(SemiconductorContext ProcessDB)//(ILogger<HomeController> logger, SemiconductorContext ProcessDB)
         {
-            _logger = logger;
+            //_logger = logger;
+            this.ProcessDB = ProcessDB;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var stdData = ProcessDB.SemiconductorModel.ToList();
+            return View(stdData);
         }
 
         public IActionResult Privacy()

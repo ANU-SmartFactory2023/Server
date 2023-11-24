@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Models;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace Server.Controllers
@@ -9,6 +10,11 @@ namespace Server.Controllers
     [ApiController]
     public class processController : ControllerBase
     {
+        private readonly SemiconductorContext ProcessDB;
+        public processController(SemiconductorContext processDB)
+        {
+            ProcessDB = processDB;
+        }
         // 센서값 저장 및 불량여부 기준 센서값 판단
         // POST pi/<ValuesController>/2
         [HttpPost("{id}")]
@@ -19,8 +25,14 @@ namespace Server.Controllers
 
             //중간과정
             //DB에 저장
-            HomeController i = new HomeController(ILogger < HomeController > logger);
-            i.Index();
+            //SemiconductorModel model = new SemiconductorModel();
+            //model.lot_id = "test1";
+            //model.sensor_1 = 1;
+            //model.sensor_2 = 2;
+            //model.sensor_3 = 3;
+            //model.sensor_4 = 4;
+            //model.grade = id;
+            test(id); //비동기 괜찮나?
             // id 번의 name칼럼에 value 저장?
 
             ResponseModel s = new ResponseModel();
@@ -80,6 +92,29 @@ namespace Server.Controllers
             s.statusCode = 200;
 
             return JsonSerializer.Serialize(s);
+        }
+
+
+        //test
+        [HttpGet("{id}")] //이건 빼도  될터인데 테스트용
+        public async Task<IActionResult> test(int id)
+        {
+            SemiconductorModel model = new SemiconductorModel();
+            model.lot_id = "test"+ id.ToString();
+            model.sensor_1 = 1;
+            model.sensor_2 = 2;
+            model.sensor_3 = 3;
+            model.sensor_4 = 4;
+            model.grade = 0;
+            if (ModelState.IsValid)  //비동기는 쉽지만 남발 할 시 피를 볼 수 있다.
+            {
+                await ProcessDB.SemiconductorModel.AddAsync(model);
+                await ProcessDB.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
+            }
+            //await i.Create(model);
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

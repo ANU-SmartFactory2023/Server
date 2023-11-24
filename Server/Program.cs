@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Server.Models;
 
 namespace Server
 {
@@ -13,9 +14,9 @@ namespace Server
 
             //ÀÌ°Å Ãß°¡µÊ
             //appsetting.json --> connectionString
-            //var provider = builder.Services.BuildServiceProvider();
-            //var config = provider.GetRequiredService<IConfiguration>();
-            //builder.Services.AddDbContext<StudentDbContext>(item => item.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            var provider = builder.Services.BuildServiceProvider();
+            var config = provider.GetRequiredService<IConfiguration>();
+            builder.Services.AddDbContext<SemiconductorContext>(item => item.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
 
             var app = builder.Build();
