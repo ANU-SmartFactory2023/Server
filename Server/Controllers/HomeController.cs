@@ -6,11 +6,11 @@ namespace Server.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly SemiconductorContext ProcessDB;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(SemiconductorContext ProcessDB)
         {
-            _logger = logger;
+            this.ProcessDB = ProcessDB;
         }
 
         public IActionResult Index()
