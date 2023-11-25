@@ -6,26 +6,95 @@
 
 <!-- 스타일 추가 -->
 <style>
-    .labelBox {
-        border: 1px solid #000;
-        padding: 10px;
-        margin-bottom: 10px;
-        display: block; /* 변경된 부분 */
+    body {
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
     }
 
-    .dataBox {
+    .wrapperBox {
+        display: flex;
+    }
+
+    .subBox {
         border: 1px solid #000;
+        margin: 10px;
         padding: 10px;
-        margin-top: 10px;
-        display: block; /* 변경된 부분 */
+        box-sizing: border-box;
+        width: 200px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px; /* 테두리 둥글게 조절 */
+    }
+
+    .processInfo {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .innerBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px; /* 간격 조절 */
+    }
+
+    .wordBox {
+        margin: 15px 0; /* 위아래 간격 조절 */
+    }
+
+    .labelBox {
+        border: 1px solid #000;
+        display: block;
+        margin: 10px; /* 간격 조절 */
+        padding: 10px;
+        box-sizing: border-box; /* 박스 크기를 padding까지 포함하여 계산 */
+        border-radius: 5px; /* 테두리 둥글게 조절 */
+        width: 130%; /* 가로 길이 조절 */
     }
 </style>
 
-@foreach (var item in Model.Total_historyData)
-{
-    <!-- LOT_ID 레이블 출력 -->
-    <div class="labelBox">LOT_ID</div>
+<div class="wrapperBox">
+    <!-- 첫 번째 상자 -->
+    <div class="subBox">
+        <div class="processInfo">웨이퍼 제조, 산화 공정</div>
+        <div class="innerBox">
+            <div class="labelBox">총수량</div>
+            <div class="labelBox">불량품</div>
+            <div class="labelBox">불량률</div>
+        </div>
+    </div>
 
-    <!-- SERIAL 레이블 출력 -->
-    <div class="labelBox">SERIAL</div>
-}
+    <!-- 두 번째 상자 -->
+    <div class="subBox">
+        <div class="processInfo">포토, 식각 공정</div>
+        <div class="innerBox">
+            <div class="labelBox">총수량</div>
+            <div class="labelBox">불량품</div>
+            <div class="labelBox">불량률</div>
+        </div>
+    </div>
+
+    <!-- 세 번째 상자 -->
+    <div class="subBox">
+        <div class="processInfo">증착, 금속배선 공정</div>
+        <div class="innerBox">
+            <div class="labelBox">총수량</div>
+            <div class="labelBox">불량품</div>
+            <div class="labelBox">불량률</div>
+        </div>
+    </div>
+
+    <!-- 네 번째 상자 -->
+    <div class="subBox">
+        <div class="processInfo">EDS, 패키징 공정</div>
+        <div class= "innerBox">
+            <div class="labelBox">총수량</div>
+            <div class="labelBox">불량품</div>
+            <div class="labelBox">불량률</div>
+        </div>
+    </div>
+</div>
