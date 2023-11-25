@@ -16,7 +16,7 @@ namespace Server
             //appsetting.json --> connectionString
             var provider = builder.Services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            builder.Services.AddDbContext<SemiconductorContext>(item => item.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<Total_historyContext>(item => item.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
 
             var app = builder.Build();

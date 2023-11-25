@@ -7,9 +7,9 @@ namespace Server.Controllers
     public class HomeController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
-        private readonly SemiconductorContext ProcessDB;
+        private readonly Total_historyContext ProcessDB;
 
-        public HomeController(SemiconductorContext ProcessDB)//(ILogger<HomeController> logger, SemiconductorContext ProcessDB)
+        public HomeController(Total_historyContext ProcessDB)//(ILogger<HomeController> logger, SemiconductorContext ProcessDB)
         {
             //_logger = logger;
             this.ProcessDB = ProcessDB;
@@ -17,8 +17,8 @@ namespace Server.Controllers
 
         public IActionResult Index()
         {
-            var stdData = ProcessDB.SemiconductorModel.ToList();
-            return View(stdData);
+            var thmData = ProcessDB.Total_historyModel.ToList();
+            return View(thmData);
         }
 
         public IActionResult Privacy()
