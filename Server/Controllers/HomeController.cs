@@ -9,7 +9,7 @@ namespace Server.Controllers
         //private readonly ILogger<HomeController> _logger;
         private readonly Total_historyContext ProcessDB;
 
-        public HomeController(Total_historyContext ProcessDB)//(ILogger<HomeController> logger, SemiconductorContext ProcessDB)
+        public HomeController(Total_historyContext ProcessDB)//(ILogger<HomeController> logger, Total_historyContext ProcessDB)
         {
             //_logger = logger;
             this.ProcessDB = ProcessDB;
