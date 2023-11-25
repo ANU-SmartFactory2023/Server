@@ -18,7 +18,7 @@ namespace Server.Controllers
         }
 
         // 센서값 저장 및 불량여부 기준 센서값 판단
-        // POST pi/<ValuesController>/2
+        // POST pi/<ValuesController>/2/값
         [HttpPost("{id}")]
         public string setData(int id, processModel processModel)
         {
@@ -33,13 +33,15 @@ namespace Server.Controllers
             //중간과정
             //DB에 저장
             saveDBtest(id); //비동기 괜찮나?
-            //전체 공정 시작, 종료 DB저장 타이밍은 어디에????ㅇ
+
+            //전체 공정 시작, 종료 DB저장 타이밍
             //시작 타이밍 사용자가 Start를 누른 시점
             //종료 타이밍 등급판정 fail 혹은 마지막 공정의 "센서"상태가 off가 된 시점
 
             if (cmd == "start")
             {
                 //시작 시간 DB에 저장
+                //main화면 공정 작동중으로 변경
             }
             else if(cmd == "end")
             {
@@ -89,7 +91,8 @@ namespace Server.Controllers
                 {
                     //error
                 }
-                
+                //센서값 화면에 표시 (불량여부,소요시간 등도 가능)
+                //main화면 공정 끝으로 변경
             }
             else
             {
@@ -119,6 +122,8 @@ namespace Server.Controllers
             //await i.Create(model);    
 
             return RedirectToAction("Index", "Home");
+            //업데이트 시에 새로 창을 불러오는 법 밖에 없나?
+            //안불러오는 방법이 있다 방법을 찾아라
         }
     }
 }
