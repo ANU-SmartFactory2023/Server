@@ -27,12 +27,15 @@ namespace Server.Controllers
             string name = processModel.processName;
             double value = processModel.processValue;
 
-            //답장
+            //답장용
             ResponseModel s = new ResponseModel();
 
             //중간과정
             //DB에 저장
             saveDBtest(id); //비동기 괜찮나?
+            //전체 공정 시작, 종료 DB저장 타이밍은 어디에????ㅇ
+            //시작 타이밍 사용자가 Start를 누른 시점
+            //종료 타이밍 등급판정 fail 혹은 마지막 공정의 "센서"상태가 off가 된 시점
 
             if (cmd == "start")
             {
@@ -48,6 +51,7 @@ namespace Server.Controllers
                 bool defective = true;
                 if (defective == true) //불량품
                 {
+                    //등급외 DB 저장
                     s.msg = "fail";
                     s.statusCode = 200;
                 }
@@ -56,6 +60,8 @@ namespace Server.Controllers
                     {
                         //등급 판단 //등급 A, B, C, D
                         string gread = "A";
+                        //등급값 DB저장
+
                         //왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
                         //결과 
                         if (gread == "A" || gread == "B")
@@ -83,15 +89,6 @@ namespace Server.Controllers
                 {
                     //error
                 }
-
-                if (id == 4 )//&& 양품)
-                {
-                    
-                }
-                else
-                {
-                    //결과
-                }
                 
             }
             else
@@ -99,31 +96,10 @@ namespace Server.Controllers
                 //error
             }
 
-            
-
-            //불량 여부 미달 판단
-            if (id == 4 && value > 500) // 앞으로의 결정에 따라 없어질 수도 있는 과정 입니다.
-            {
-                // 등급공정 판단 과정
-
-                
-
-            }
-            else if (value > 500)
-            {
-                s.msg = "Pass";
-                s.statusCode = 200;
-            }
-            else
-            {
-                s.msg = "Fail";
-                s.statusCode = 200;
-            }
-
             return JsonSerializer.Serialize(s);
         }
 
-        //test
+        //DB 저장 test
         [HttpGet("{id}")] //이건 빼도  될터인데 테스트용
         public async Task<IActionResult> saveDBtest(int id)
         {
