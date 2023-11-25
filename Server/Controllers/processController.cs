@@ -10,8 +10,8 @@ namespace Server.Controllers
     [ApiController]
     public class processController : ControllerBase
     {
-        private readonly SemiconductorContext ProcessDB;
-        public processController(SemiconductorContext processDB)
+        private readonly Total_historyContext ProcessDB;
+        public processController(Total_historyContext processDB)
         {
             ProcessDB = processDB;
         }
@@ -99,20 +99,20 @@ namespace Server.Controllers
         [HttpGet("{id}")] //이건 빼도  될터인데 테스트용
         public async Task<IActionResult> test(int id)
         {
-            SemiconductorModel model = new SemiconductorModel();
-            model.lot_id = "test"+ id.ToString();
-            model.sensor_1 = 1;
-            model.sensor_2 = 2;
-            model.sensor_3 = 3;
-            model.sensor_4 = 4;
-            model.grade = 0;
+            // SemiconductorModel model = new SemiconductorModel();      수정필요한 코드
+            //  model.lot_id = "test"+ id.ToString();                    수정필요한 코드
+            //  model.sensor_1 = 1;                                      수정필요한 코드
+            //  model.sensor_2 = 2;                                      수정필요한 코드
+            //  model.sensor_3 = 3;                                      수정필요한 코드
+            //  model.sensor_4 = 4;                                      수정필요한 코드
+            //  model.grade = 0;                                         수정필요한 코드
             if (ModelState.IsValid)  //비동기는 쉽지만 남발 할 시 피를 볼 수 있다.
             {
-                await ProcessDB.SemiconductorModel.AddAsync(model);
+                //    await ProcessDB.SemiconductorModel.AddAsync(model);   수정필요한 코드
                 await ProcessDB.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
-            //await i.Create(model);
+            //await i.Create(model);    
 
             return RedirectToAction("Index", "Home");
         }
