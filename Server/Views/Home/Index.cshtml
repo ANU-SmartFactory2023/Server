@@ -4,35 +4,28 @@
     ViewData["Title"] = "Home Page";
 }
 
-<!-- Total_historyModel의 데이터를 출력 -->
-<h2>Total History Data</h2>
+<!-- 스타일 추가 -->
+<style>
+    .labelBox {
+        border: 1px solid #000;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: block; /* 변경된 부분 */
+    }
+
+    .dataBox {
+        border: 1px solid #000;
+        padding: 10px;
+        margin-top: 10px;
+        display: block; /* 변경된 부분 */
+    }
+</style>
+
 @foreach (var item in Model.Total_historyData)
 {
-    <p>@item.idx - @item.lot_id - @item.serial- @item.grade</p>
-}
+    <!-- LOT_ID 레이블 출력 -->
+    <div class="labelBox">LOT_ID</div>
 
-<!-- Process1Model의 데이터를 출력 -->
-<h2>Process1 Data</h2>
-@foreach (var item in Model.process1Data)
-{
-    <p>@item.lot_id - @item.value</p>
-}
-
-<!-- Process2Model의 데이터를 출력 -->
-<h2>Process2 Data</h2>
-@foreach (var item in Model.process2Data)
-{
-    <p>@item.lot_id - @item.value</p>
-}
-<!-- Process3Model의 데이터를 출력 -->
-<h2>Process3 Data</h2>
-@foreach (var item in Model.process3Data)
-{
-    <p>@item.lot_id - @item.value</p>
-}
-<!-- Process4Model의 데이터를 출력 -->
-<h2>Process4 Data</h2>
-@foreach (var item in Model.process4Data)
-{
-    <p>@item.lot_id - @item.value</p>
+    <!-- SERIAL 레이블 출력 -->
+    <div class="labelBox">SERIAL</div>
 }
