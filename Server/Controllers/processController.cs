@@ -25,14 +25,7 @@ namespace Server.Controllers
 
             //중간과정
             //DB에 저장
-            //SemiconductorModel model = new SemiconductorModel();
-            //model.lot_id = "test1";
-            //model.sensor_1 = 1;
-            //model.sensor_2 = 2;
-            //model.sensor_3 = 3;
-            //model.sensor_4 = 4;
-            //model.grade = id;
-            test(id); //비동기 괜찮나?
+            saveDB(id); //비동기 괜찮나?
             // id 번의 name칼럼에 value 저장?
 
             ResponseModel s = new ResponseModel();
@@ -60,44 +53,9 @@ namespace Server.Controllers
             return JsonSerializer.Serialize(s);
         }
 
-        //앞으로의 결정에 따라 없어질 수도 있는 과정 입니다.
-        // 시작 신호
-        [HttpPost("{id}/start")]
-        public string setStartTime(int id, TimeModel timestart)
-        {
-            string name = timestart.Name;
-            DateTime start = timestart.Time;
-
-            //시작시간 DB? 변수? 에 저장
-
-            ResponseModel s = new ResponseModel();
-
-            s.msg = "OK";
-            s.statusCode = 200;
-
-            return JsonSerializer.Serialize(s);
-        }
-        // 종료 신호
-        [HttpPost("{id}/end")]
-        public string setEndTime(int id, TimeModel timestart)
-        {
-            string name = timestart.Name;
-            DateTime start = timestart.Time;
-
-            //종료시간 DB? 변수? 에 저장
-
-            ResponseModel s = new ResponseModel();
-
-            s.msg = "OK";
-            s.statusCode = 200;
-
-            return JsonSerializer.Serialize(s);
-        }
-
-
         //test
         [HttpGet("{id}")] //이건 빼도  될터인데 테스트용
-        public async Task<IActionResult> test(int id)
+        public async Task<IActionResult> saveDB(int id)
         {
             // SemiconductorModel model = new SemiconductorModel();      수정필요한 코드
             //  model.lot_id = "test"+ id.ToString();                    수정필요한 코드
