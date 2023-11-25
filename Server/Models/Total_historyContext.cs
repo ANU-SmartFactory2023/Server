@@ -21,10 +21,10 @@ namespace Server.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Total_historyModel>().HasKey(x => x.idx);  // 기본키 정의
-            modelBuilder.Entity<Process1Model>().HasKey(x => x.idx);    // 기본키 정의
-            modelBuilder.Entity<Process2Model>().HasKey(x => x.idx);    // 기본키 정의
-            modelBuilder.Entity<Process3Model>().HasKey(x => x.idx);    // 기본키 정의
-            modelBuilder.Entity<Process4Model>().HasKey(x => x.idx);    // 기본키 정의
+            modelBuilder.Entity<Process1Model>().HasKey(x => x.idx);       // 기본키 정의
+            modelBuilder.Entity<Process2Model>().HasKey(x => x.idx);       // 기본키 정의
+            modelBuilder.Entity<Process3Model>().HasKey(x => x.idx);       // 기본키 정의
+            modelBuilder.Entity<Process4Model>().HasKey(x => x.idx);       // 기본키 정의
 
 
             modelBuilder.Entity<Total_historyModel>().ToTable("Total_history");

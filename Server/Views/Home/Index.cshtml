@@ -1,8 +1,38 @@
-﻿@{
+﻿@model MainModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Total_historyModel의 데이터를 출력 -->
+<h2>Total History Data</h2>
+@foreach (var item in Model.Total_historyData)
+{
+    <p>@item.idx - @item.lot_id - @item.serial- @item.grade</p>
+}
+
+<!-- Process1Model의 데이터를 출력 -->
+<h2>Process1 Data</h2>
+@foreach (var item in Model.process1Data)
+{
+    <p>@item.lot_id - @item.value</p>
+}
+
+<!-- Process2Model의 데이터를 출력 -->
+<h2>Process2 Data</h2>
+@foreach (var item in Model.process2Data)
+{
+    <p>@item.lot_id - @item.value</p>
+}
+<!-- Process3Model의 데이터를 출력 -->
+<h2>Process3 Data</h2>
+@foreach (var item in Model.process3Data)
+{
+    <p>@item.lot_id - @item.value</p>
+}
+<!-- Process4Model의 데이터를 출력 -->
+<h2>Process4 Data</h2>
+@foreach (var item in Model.process4Data)
+{
+    <p>@item.lot_id - @item.value</p>
+}
