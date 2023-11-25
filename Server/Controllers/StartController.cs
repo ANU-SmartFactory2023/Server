@@ -6,19 +6,17 @@ namespace Server.Controllers
 {
     [Route("pi/[controller]")]
     [ApiController]
-    public class StartController : Controller
+    public class StartController : ControllerBase
     {
-        int i;  
-        public IActionResult Index()
-        {
-            return View();
-        }
+
         [HttpGet]
         public string GetResponse()
         {
             ResponseModel r = new ResponseModel();
           
-            if(i > 500) // lot 번호 부여 여부 판별
+            bool isPressed = false; //start 버튼이 눌렸느냐?
+
+            if(isPressed == false)
             {
                 r.msg = "WAIT";
                 r.statusCode = 500;
