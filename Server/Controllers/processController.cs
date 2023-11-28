@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Server.Models;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ namespace Server.Controllers
 
             //중간과정
             //DB에 저장
-            saveDBtest(id); //비동기 괜찮나?
+            //saveDBtest(id); //비동기 괜찮나?
 
             //전체 공정 시작, 종료 DB저장 타이밍
             //시작 타이밍 사용자가 Start를 누른 시점
@@ -41,7 +42,12 @@ namespace Server.Controllers
             if (cmd == "start")
             {
                 //시작 시간 DB에 저장
+                //DateTime now = DateTime.Now;
+                //saveDBtest(now);
                 //main화면 공정 작동중으로 변경
+
+                s.msg = "ok";
+                s.statusCode = 200;
             }
             else if(cmd == "end")
             {
@@ -97,11 +103,14 @@ namespace Server.Controllers
             else
             {
                 //error
+
+                s.msg = "sentence error";
+                s.statusCode = 500;
             }
 
             return JsonSerializer.Serialize(s);
         }
-
+        /*
         //DB 저장 test
         [HttpGet("{id}")] //이건 빼도  될터인데 테스트용
         public async Task<IActionResult> saveDBtest(int id)
@@ -125,5 +134,32 @@ namespace Server.Controllers
             //업데이트 시에 새로 창을 불러오는 법 밖에 없나?
             //안불러오는 방법이 있다 방법을 찾아라
         }
+        */
+        //보류
+        /*
+        public async Task<IActionResult> saveDBtest(int id, DateTime now) //현재시간 업데이트
+        {
+            
+            var updateData = ProcessDB.Process1Model.Find(id);// id? lot_id? 뭘로 찾아야하지?
+            //보류
+
+            if (updateData == null)
+            {
+                return NotFound();
+            }
+
+            updateData.start_time = now; //값 변경
+
+            if (ModelState.IsValid)  //비동기는 쉽지만 남발 할 시 피를 볼 수 있다.
+            {
+                ProcessDB.Update(updateData); //업데이트
+                ProcessDB.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+            //await i.Create(model);    
+
+            return RedirectToAction("Index", "Home");
+        }
+        */
     }
 }

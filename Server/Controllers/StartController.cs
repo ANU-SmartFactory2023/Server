@@ -26,7 +26,7 @@ namespace Server.Controllers
                 r.msg = "OK";
                 r.statusCode = 200;
             }
-            
+
             return JsonSerializer.Serialize(r);
         }
     }
