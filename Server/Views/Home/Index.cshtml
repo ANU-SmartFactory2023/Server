@@ -15,6 +15,8 @@
 
     .wrapperBox {
         display: flex;
+        flex-wrap: wrap; /* 상자가 다음 줄로 넘어갈 수 있게 함 */
+        justify-content: center; /* 상자를 수평으로 가운데 정렬 */
     }
 
     .subBox {
@@ -22,7 +24,7 @@
         margin: 10px;
         padding: 10px;
         box-sizing: border-box;
-        width: 200px;
+        width: 260px;
         height: 300px;
         display: flex;
         flex-direction: column;
@@ -42,10 +44,6 @@
         margin-top: 10px; /* 간격 조절 */
     }
 
-    .wordBox {
-        margin: 15px 0; /* 위아래 간격 조절 */
-    }
-
     .labelBox {
         border: 1px solid #000;
         display: block;
@@ -55,6 +53,33 @@
         border-radius: 5px; /* 테두리 둥글게 조절 */
         width: 130%; /* 가로 길이 조절 */
     }
+
+    .horizontalBox {
+        border: 1px solid #000;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        width:  1100px; /* 가로 길이 조절 */
+        height: 100px; /* 세로 길이 조절 */
+        border-radius: 10px; /* 테두리 둥글게 조절 */
+        margin-left: 5%; /* 왼쪽 여백 조절 */
+        margin-right: 5%; /* 오른쪽 여백 조절 */
+    }
+
+    .additionalSubBox {
+        border: 1px solid #000;
+        margin: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        width: 200px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px; /* 테두리 둥글게 조절 */
+        /* 한 줄에 4개씩 배치 */
+        flex-basis: 20%;
+    }
 </style>
 
 <div class="wrapperBox">
@@ -62,9 +87,9 @@
     <div class="subBox">
         <div class="processInfo">웨이퍼 제조, 산화 공정</div>
         <div class="innerBox">
-            <div class="labelBox">총수량</div>
-            <div class="labelBox">불량품</div>
-            <div class="labelBox">불량률</div>
+            <div class="labelBox">총수량 :</div>
+            <div class="labelBox">불량품 :</div>
+            <div class="labelBox">불량률 :</div>
         </div>
     </div>
 
@@ -72,9 +97,9 @@
     <div class="subBox">
         <div class="processInfo">포토, 식각 공정</div>
         <div class="innerBox">
-            <div class="labelBox">총수량</div>
-            <div class="labelBox">불량품</div>
-            <div class="labelBox">불량률</div>
+            <div class="labelBox">총수량 :</div>
+            <div class="labelBox">불량품 :</div>
+            <div class="labelBox">불량률 :</div>
         </div>
     </div>
 
@@ -82,19 +107,57 @@
     <div class="subBox">
         <div class="processInfo">증착, 금속배선 공정</div>
         <div class="innerBox">
-            <div class="labelBox">총수량</div>
-            <div class="labelBox">불량품</div>
-            <div class="labelBox">불량률</div>
+            <div class="labelBox">총수량 :</div>
+            <div class="labelBox">불량품 :</div>
+            <div class="labelBox">불량률 :</div>
         </div>
     </div>
 
     <!-- 네 번째 상자 -->
     <div class="subBox">
         <div class="processInfo">EDS, 패키징 공정</div>
-        <div class= "innerBox">
-            <div class="labelBox">총수량</div>
-            <div class="labelBox">불량품</div>
-            <div class="labelBox">불량률</div>
+        <div class="innerBox">
+            <div class="labelBox">총수량 :</div>
+            <div class="labelBox">불량품 :</div>
+            <div class="labelBox">불량률 :</div>
         </div>
+    </div>
+
+    <!-- 가로로 긴 상자 추가 -->
+    <div class="horizontalBox">
+        <div class="processInfo">공정 진행</div>
+    </div>
+
+    <!-- 8 개의 상자 -->
+    <div class="additionalSubBox">
+        <div class="processInfo">웨이퍼 제조, 산화 공정</div>
+    </div>
+
+    <div class="additionalSubBox">
+        <div class="processInfo">포토, 식각 공정</div>
+    </div>
+
+    <div class="additionalSubBox">
+        <div class="processInfo">증착, 금속배선 공정</div>
+    </div>
+
+    <div class="additionalSubBox">
+        <div class="processInfo">EDS, 패키징 공정</div>
+    </div>
+
+      <div class="additionalSubBox">
+        <div class="processInfo">무게</div>
+    </div>
+
+      <div class="additionalSubBox">
+        <div class="processInfo">진동</div>
+    </div>
+
+    <div class="additionalSubBox">
+        <div class="processInfo">밝기</div>
+    </div>
+
+    <div class="additionalSubBox">
+        <div class="processInfo">온도</div>
     </div>
 </div>
