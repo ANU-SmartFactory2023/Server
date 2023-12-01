@@ -67,6 +67,25 @@
 		margin-right: 5%; /* 오른쪽 여백 조절 */
 	}
 
+	.arrow {
+		width: 30px;
+		height: 0;
+		border-style: solid;
+		display: inline-block;
+		margin: 0 25px;
+		transform: translateY(-10px); /* 화살표를 위로 5픽셀 이동 */
+	}
+
+	.circle {
+		width: 20px;
+		height: 20px;
+		background-color: #000;
+		border-radius: 40%;
+		display: inline-block;
+		margin: 0 90px;
+		transform: translateY(-10px); /* 화살표를 위로 5픽셀 이동 */
+	}
+
 	/* 8개의 박스 */
 	.additionalSubBox {
 		border: 1px solid #000;
@@ -464,6 +483,15 @@
 	<!-- 가로로 긴 상자 추가 -->
 	<div class="horizontalBox">
 		<div class="processInfo">공정 진행</div>
+
+		<!-- 4개의 원 -->
+		<div class="circle"></div>
+		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+		<div class="circle"></div>
+		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+		<div class="circle"></div>
+		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+		<div class="circle"></div>
 	</div>
 
 	<!-- 8 개의 상자 -->

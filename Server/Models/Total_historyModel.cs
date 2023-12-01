@@ -12,6 +12,6 @@
         public int? process2_idx { get; set;}
         public int? process3_idx { get; set;}
         public int? process4_idx { get; set;}
-        public int? grade { get; set; }
+        public string? grade { get; set; }
     }
 }
