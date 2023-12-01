@@ -3,6 +3,9 @@
 @{
 	ViewData["Title"] = "Home Page";
 }
+<header>
+	<h1>MES 시스템 이름...</h1>
+</header>
 
 <!-- 스타일 추가 -->
 <style>
@@ -11,14 +14,31 @@
 		justify-content: center;
 		height: 100vh;
 		margin: 0;
+		background-color: #f4f4f4; /* 밝은 회색 배경 */
+		font-family: 'Arial', sans-serif; /* 표준 글꼴 선택 */
+	}
+
+	header {
+		background-color: #333; /* 헤더의 어두운 배경 */
+		color: #fff; /* 헤더의 흰색 텍스트 */
+		padding: 10px;
+		text-align: center;
 	}
 
 	.wrapperBox {
+		position: absolute;
+		top: 130px;
+		left: 400px;
 		display: flex;
 		flex-wrap: wrap; /* 상자가 다음 줄로 넘어갈 수 있게 함 */
 		justify-content: center; /* 상자를 수평으로 가운데 정렬 */
 	}
 
+	.subBox, .horizontalBox, .additionalSubBox1, .additionalSubBox2, .additionalSubBox3, .additionalSubBox4, .additionalSubBox5, 
+	.additionalSubBox6, .additionalSubBox7, .additionalSubBox8, .circle, .fullHistoryButton, .GradeBox1, .GradeBox2, .GradeBox3
+	,.GradeBox4, .individualHistoryButton, .startButton, .totalDefectRateButton, .totalProductionButton, .lotSerialBox{
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* 은은한 박스 그림자 추가 */
+	}
 	.subBox {
 		border: 1px solid #000;
 		margin: 10px;
@@ -56,6 +76,9 @@
 
 	/* 공정 진행 박스 */
 	.horizontalBox {
+		position: absolute;
+		top: 330px;
+		left: -45px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -68,11 +91,11 @@
 	}
 
 	.arrow {
-		width: 30px;
+		width: 20px;
 		height: 0;
 		border-style: solid;
 		display: inline-block;
-		margin: 0 25px;
+		margin: 0 18px;
 		transform: translateY(-15px); /* 화살표를 위로 15픽셀 이동 */
 	}
 
@@ -82,33 +105,147 @@
 		background-color: #000;
 		border-radius: 40%;
 		display: inline-block;
-		margin: 0 90px;
+		margin: 0 92px;
 		transform: translateY(-15px); /* 화살표를 위로 15픽셀 이동 */
 	}
 
 	/* 8개의 박스 */
-	.additionalSubBox {
+	.additionalSubBox1 {
+		position: absolute;
+		top: 460px;
+		left: 0px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
 		box-sizing: border-box;
-		width: 200px;
+		width: 260px;
 		height: 150px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		border-radius: 10px; /* 테두리 둥글게 조절 */
-		/* 한 줄에 4개씩 배치 */
-		flex-basis: 20%;
+	}
+
+	.additionalSubBox2 {
+		position: absolute;
+		top: 460px;
+		left: 280px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox3 {
+		position: absolute;
+		top: 460px;
+		left: 560px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox4 {
+		position: absolute;
+		top: 460px;
+		left: 840px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox5 {
+		position: absolute;
+		top: 640px;
+		left: 280px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox6 {
+		position: absolute;
+		top: 640px;
+		left: 560px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox7 {
+		position: absolute;
+		top: 640px;
+		left: 840px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.additionalSubBox8 {
+		position: absolute;
+		top: 640px;
+		left: 0px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 150px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
 	}
 
 	/* 랏번호 및 시리얼 박스 */
 	.lotSerialBox {
 		position: absolute;
-		top: 90px;
-		left: 80px;
+		top: 150px;
+		left: 90px;
+		/* 가로 길이를 설정합니다. */
+		width: 200px;
 		display: block;
-		width: 8%; /* 가로 길이 조절 */
 		flex-direction: column;
 		align-items: center;
 		border: 1px solid #000;
@@ -120,17 +257,19 @@
 	/* 랏번호 및 시리얼 박스 안 글씨 */
 	.lotSerialLabel {
 		font-weight: bold;
-		margin-bottom: 5px;
+		margin-bottom: 3px;
+		padding-left: 10px;
 	}
 
 	/* 오늘 총 생산량 버튼 */
 	.totalProductionButton {
+		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
-		top: 230px;
+		top: 300px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 80px;
+		left: 90px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -142,7 +281,7 @@
 		/* 세로 길이를 설정합니다. */
 		height: 70px;
 		/* 가로 길이를 설정합니다. */
-		width: 8%;
+		width: 200px;
 		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
 		box-sizing: border-box;
 		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
@@ -164,12 +303,13 @@
 
 	/* 전체 불량률 버튼 */
 	.totalDefectRateButton {
+		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
-		top: 310px;
+		top: 390px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 80px;
+		left: 90px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -181,7 +321,7 @@
 		/* 세로 길이를 설정합니다. */
 		height: 70px;
 		/* 가로 길이를 설정합니다. */
-		width: 8%;
+		width: 200px;
 		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
 		box-sizing: border-box;
 		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
@@ -203,10 +343,10 @@
 
 	.GradeBox1 {
 		position: absolute;
-		top: 440px;
-		left: 80px;
+		top: 530px;
+		left: 120px;
 		display: block;
-		width: 8%; /* 가로 길이 조절 */
+		width: 150px; /* 가로 길이 조절 */
 		flex-direction: column;
 		align-items: center;
 		border: 1px solid #000;
@@ -218,14 +358,15 @@
 	.GradeLabel1 {
 		font-weight: bold;
 		margin-bottom: 5px;
+		padding-left: 10px;
 	}
 
 	.GradeBox2 {
 		position: absolute;
-		top: 500px;
-		left: 80px;
+		top: 600px;
+		left: 120px;
 		display: block;
-		width: 8%; /* 가로 길이 조절 */
+		width: 150px; /* 가로 길이 조절 */
 		flex-direction: column;
 		align-items: center;
 		border: 1px solid #000;
@@ -237,14 +378,15 @@
 	.GradeLabel2 {
 		font-weight: bold;
 		margin-bottom: 5px;
+		padding-left: 10px;
 	}
 
 	.GradeBox3 {
 		position: absolute;
-		top: 560px;
-		left: 80px;
+		top: 670px;
+		left: 120px;
 		display: block;
-		width: 8%; /* 가로 길이 조절 */
+		width: 150px; /* 가로 길이 조절 */
 		flex-direction: column;
 		align-items: center;
 		border: 1px solid #000;
@@ -256,14 +398,15 @@
 	.GradeLabel3 {
 		font-weight: bold;
 		margin-bottom: 5px;
+		padding-left: 10px;
 	}
 
 	.GradeBox4 {
 		position: absolute;
-		top: 620px;
-		left: 80px;
+		top: 740px;
+		left: 120px;
 		display: block;
-		width: 8%; /* 가로 길이 조절 */
+		width: 150px; /* 가로 길이 조절 */
 		flex-direction: column;
 		align-items: center;
 		border: 1px solid #000;
@@ -275,15 +418,17 @@
 	.GradeLabel4 {
 		font-weight: bold;
 		margin-bottom: 5px;
+		padding-left: 10px;
 	}
 
 	.startButton {
+		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
-		top: 740px;
+		top: 850px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 80px;
+		left: 90px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -295,7 +440,7 @@
 		/* 세로 길이를 설정합니다. */
 		height: 70px;
 		/* 가로 길이를 설정합니다. */
-		width: 8%;
+		width: 200px;
 		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
 		box-sizing: border-box;
 		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
@@ -312,12 +457,13 @@
 
 	/* 전체 이력 버튼 */
 	.fullHistoryButton {
+		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
-		top: 90px;
+		top: 150px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 1500px;
+		left: 1600px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -329,7 +475,7 @@
 		/* 세로 길이를 설정합니다. */
 		height: 70px;
 		/* 가로 길이를 설정합니다. */
-		width: 8%;
+		width: 200px;
 		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
 		box-sizing: border-box;
 		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
@@ -346,12 +492,13 @@
 
 	/* 개별 이력 버튼 */
 	.individualHistoryButton {
+		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
-		top: 170px;
+		top: 240px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 1500px;
+		left: 1600px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -363,7 +510,7 @@
 		/* 세로 길이를 설정합니다. */
 		height: 70px;
 		/* 가로 길이를 설정합니다. */
-		width: 8%;
+		width: 200px;
 		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
 		box-sizing: border-box;
 		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
@@ -378,14 +525,15 @@
 		border-radius: 5px;
 	}
 
-		/* 버튼이 안으로 들어가는 효과 */
-		.totalProductionButton,
-		.totalDefectRateButton,
-		.startButton,
-		.fullHistoryButton,
-		.individualHistoryButton {
-			transition: transform 0.3s ease; /* transform 속성에 대한 0.3초 동안의 변화를 부드럽게 적용 */
-		}
+	/* 버튼이 안으로 들어가는 효과 */
+	.totalProductionButton,
+	.totalDefectRateButton,
+	.startButton,
+	.fullHistoryButton,
+	.individualHistoryButton {
+		transition: transform 0.3s ease; /* transform 속성에 대한 0.3초 동안의 변화를 부드럽게 적용 */
+	}
+
 		.totalProductionButton:hover,
 		.totalDefectRateButton:hover,
 		.startButton:hover,
@@ -397,7 +545,7 @@
 
 <divbutton button class="totalProductionButton" onclick="openNewWindow()">오늘 총 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow()">전체 불량률</divbutton>
-<divbutton button class="startButton" onclick="openNewWindow()">START</divbutton>
+<divbutton button class="startButton" onclick="openNewWindow()">S T A R T</divbutton>
 <divbutton button class="fullHistoryButton" onclick="openNewWindow()">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton" onclick="openNewWindow()">개별 이력</divbutton>
 
@@ -409,8 +557,8 @@
 	}
 	@foreach (var historyItem in Model.Total_historyData)
 	{
-	<div class="lotSerialLabel">SERIAL : @historyItem.serial</div>
-	<!-- SERIAL 값이 있다면 여기에 추가하세요 -->
+		<div class="lotSerialLabel">SERIAL : @historyItem.serial</div>
+		<!-- SERIAL 값이 있다면 여기에 추가하세요 -->
 	}
 </div>
 
@@ -495,35 +643,35 @@
 	</div>
 
 	<!-- 8 개의 상자 -->
-	<div class="additionalSubBox">
+	<div class="additionalSubBox1">
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox2">
 		<div class="processInfo">포토, 식각 공정</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox3">
 		<div class="processInfo">증착, 금속배선 공정</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox4">
 		<div class="processInfo">EDS, 패키징 공정</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox5">
 		<div class="processInfo">무게</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox6">
 		<div class="processInfo">진동</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox7">
 		<div class="processInfo">밝기</div>
 	</div>
 
-	<div class="additionalSubBox">
+	<div class="additionalSubBox8">
 		<div class="processInfo">온도</div>
 	</div>
 </div>
