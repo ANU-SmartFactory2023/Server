@@ -18,12 +18,12 @@ namespace Server.Controllers
 
             if(isPressed == false)
             {
-                r.msg = "WAIT";
+                r.msg = "wait";
                 r.statusCode = 500;
             }
             else
             {
-                r.msg = "OK";
+                r.msg = "ok";
                 r.statusCode = 200;
             }
 
