@@ -46,15 +46,16 @@ namespace Server.Controllers
                 //종료시간 DB에 저장, 소요시간 계산, 소요시간 DB에 저장, 센서값 DB에 저장
                 await updateDB(cmd, id, null, value);
 
-                //불량 여부 판단
+                ////불량 여부 판단
                 bool defective = false;
+
                 if (defective == true) //불량품
                 {
                     //등급외 DB 저장
                     await updateDB("grade", id, "등외");
                     //전체공정 종료 시간 DB 저장
-                    SensorController sse = new SensorController(ProcessDB);
-                    await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
+                    //SensorController sse = new SensorController(ProcessDB);
+                    //await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
 
                     s.msg = "fail";
                     s.statusCode = 200;
@@ -62,12 +63,12 @@ namespace Server.Controllers
                 else if(defective == false){ //양품
                     if(id == 4) // 마지막 공정일 경우
                     {
-                        //등급 판단 //등급 A, B, C, D
+                        ////등급 판단 //등급 A, B, C, D
                         string grade = "A";
                         //등급값 DB저장
                         await updateDB("grade", id, grade);
 
-                        //왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
+                        ////왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
                         //결과 
                         if (grade == "A" || grade == "B")
                         {
@@ -94,8 +95,8 @@ namespace Server.Controllers
                 {
                     //error
                 }
-                //센서값 화면에 표시 (불량여부,소요시간 등도 가능)
-                //main화면 공정 끝으로 변경
+                ////센서값 화면에 표시 (불량여부,소요시간 등도 가능)
+                ////main화면 공정 끝으로 변경
             }
             else
             {
@@ -108,13 +109,36 @@ namespace Server.Controllers
             return JsonSerializer.Serialize(s);
         }
 
-/*****************************************************DB Update**************************************************************/
-        public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
+		[HttpGet("{id}")]
+		public string GetMessage()
+		{
+			ResponseModel r = new ResponseModel();
+
+			bool defective = false; //공정 2가 양품이냐 불량이냐 
+			////DB에서 공정2의 값 가져오기
+			////양품, 불량 판단
+
+			if (defective == false) //양품
+			{
+				r.msg = "pass";
+				r.statusCode = 500;
+			}
+			else                    //불량품
+			{
+				r.msg = "fail";
+				r.statusCode = 200;
+			}
+
+			return JsonSerializer.Serialize(r);
+		}
+
+		/*****************************************************DB Update**************************************************************/
+		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
-            //Lot Id를 이용햐여 데이터 불러오기 (임시)
-            // id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
-            string lotid = "Semiconductor2023120101";
-            int serial = 5;
+            ////Lot Id를 이용햐여 데이터 불러오기 (임시)
+            //// id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
+            string lotid = "Semiconductor2023120201";
+            int serial = 8;
 
             switch (mode)
             {
@@ -241,8 +265,12 @@ namespace Server.Controllers
 
             DateTime now = DateTime.Now;
             updateData.end_time = now;
-            DateTime zero = new DateTime(1400, 01, 01, 00, 00, 00); //임시
-            updateData.spend_time = zero + (now - updateData.start_time); //임시
+
+            long timeSpan = (now - updateData.start_time).Ticks;
+			int sec = (int)timeSpan/10000000;
+            double misec = timeSpan%10000000;
+            string spendtime = sec + "." + misec;
+            updateData.spend_time = spendtime;
             updateData.value = value;
               
             ProcessDB.Update(updateData);
