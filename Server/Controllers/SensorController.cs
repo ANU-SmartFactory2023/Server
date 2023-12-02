@@ -25,8 +25,8 @@ namespace Server.Controllers
         public async Task<string> Post(int id, SensorModel sensorModel)
         {
             //받아온 값
-            string name = sensorModel.Name;
-            string state = sensorModel.State;
+            string name = sensorModel.sensorName;
+            string state = sensorModel.sensorState;
 
             //답장용
             ResponseModel r = new ResponseModel();
@@ -36,13 +36,14 @@ namespace Server.Controllers
 
             if (state == "on")
             {
-                ////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
+				////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
+				await _hubContext.Clients.All.SendAsync("DetectState",id, "detected");
 
-                if (id == 0)
+				if (id == 1)
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
-                    //main화면 start버튼 활성화
+                    ////main화면 start버튼 활성화
                     await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
 
                     ////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 or 공정 종료하면
@@ -52,19 +53,20 @@ namespace Server.Controllers
             }
             else if(state == "off")
             {
-                ////main화면 물체 없음 상태로 변경
+				////main화면 물체 없음 상태로 변경
+				await _hubContext.Clients.All.SendAsync("DetectState", id, "noting");
 
-                if (id == 4)
+				if (id == 6)
                 {
                     await updateEndtime(); // 전체공정 end time 저장
                 }
             }
             else
             {
-                //error
-                r.msg = "error";
-                r.statusCode = 400;
-            }
+				//error
+				r.msg = "sentence errer";
+				r.statusCode = 404;
+			}
 
 
             return JsonSerializer.Serialize(r);

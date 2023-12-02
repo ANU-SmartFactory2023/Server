@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Server.Models;
@@ -12,16 +13,19 @@ namespace Server.Controllers
     [ApiController]
     public class processController : ControllerBase
     {
-        //DB와 연결
-        private readonly Total_historyContext ProcessDB;
-        public processController(Total_historyContext processDB)
-        {
-            ProcessDB = processDB;
-        }
+		//DB와 연결, 허브와 연결
+		private readonly Total_historyContext ProcessDB;
+		private readonly IHubContext<SensorHub> _hubContext;
 
-        // 센서값 저장 및 불량여부 기준 센서값 판단
-        // POST pi/<ValuesController>/2/값
-        [HttpPost("{id}")]
+		public processController(Total_historyContext processDB, IHubContext<SensorHub> hubContext)
+		{
+			ProcessDB = processDB;
+			_hubContext = hubContext;
+		}
+
+		// 센서값 저장 및 불량여부 기준 센서값 판단
+		// POST pi/<ValuesController>/2/값
+		[HttpPost("{id}")]
         public async Task<string> setData(int id, processModel processModel)
         {
             //받은 값
@@ -36,9 +40,10 @@ namespace Server.Controllers
             {
                 await updateDB(cmd, id); //process 데이터 생성, 시작 시간 DB에 저장
                 await updateDB("setid", id); //idx 저장
-                ////main화면 공정 작동중으로 변경
+				////main화면 공정 작동중으로 변경
+				await _hubContext.Clients.All.SendAsync("WorkingState", id, "working");
 
-                s.msg = "ok";
+				s.msg = "ok";
                 s.statusCode = 200;
             }
             else if(cmd == "end")
@@ -46,16 +51,19 @@ namespace Server.Controllers
                 //종료시간 DB에 저장, 소요시간 계산, 소요시간 DB에 저장, 센서값 DB에 저장
                 await updateDB(cmd, id, null, value);
 
-                ////불량 여부 판단
-                bool defective = false;
+				////센서값 화면에 표시
+				await _hubContext.Clients.All.SendAsync("setValue", id, "setValue");
+
+				////불량 여부 판단
+				bool defective = false;
 
                 if (defective == true) //불량품
                 {
                     //등급외 DB 저장
                     await updateDB("grade", id, "등외");
                     //전체공정 종료 시간 DB 저장
-                    //SensorController sse = new SensorController(ProcessDB);
-                    //await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
+                    SensorController sse = new SensorController(ProcessDB, _hubContext);
+                    await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
 
                     s.msg = "fail";
                     s.statusCode = 200;
@@ -82,8 +90,10 @@ namespace Server.Controllers
                         }
                         else
                         {
-                            //error
-                        }
+							//error
+							s.msg = "sentence errer";
+							s.statusCode = 404;
+						}
                     }
                     else
                     {
@@ -93,17 +103,19 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    //error
-                }
-                ////센서값 화면에 표시 (불량여부,소요시간 등도 가능)
-                ////main화면 공정 끝으로 변경
-            }
+					//error
+					s.msg = "sentence errer";
+					s.statusCode = 404;
+				}
+				////센서값 화면에 표시 (불량여부,소요시간 등도 가능)
+				////main화면 공정 끝으로 변경
+				await _hubContext.Clients.All.SendAsync("WorkingState", id, "end");
+			}
             else
             {
                 //error
-
-                //s.msg = "sentence error";
-                //s.statusCode = 500;
+                s.msg = "sentence error";
+                s.statusCode = 404;
             }
 
             return JsonSerializer.Serialize(s);
