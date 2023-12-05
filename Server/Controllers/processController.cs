@@ -69,8 +69,8 @@ namespace Server.Controllers
                     s.statusCode = 200;
                 }
                 else if(defective == false){ //양품
-                    if(id == 6) // 마지막 공정일 경우
-                    {
+                    if(id == 6) // 마지막 공정일 경우  -> 수정해야함
+					{
                         ////등급 판단 //등급 A, B, C, D
                         string grade = "A";
                         //등급값 DB저장
@@ -130,8 +130,8 @@ namespace Server.Controllers
 			ResponseModel r = new ResponseModel();
 
 			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-			string lotid = "Semiconductor2023120201"; //임시
-			int serial = 8; //임시
+			string lotid = "SC20231205"; //임시
+			int serial = 2; //임시
 
 			bool defective = false; //공정 2가 양품이냐 불량이냐 (임시)
 			////DB에서 공정2의 값 가져오기
@@ -164,8 +164,8 @@ namespace Server.Controllers
 		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
             ////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-            string lotid = "Semiconductor2023120201"; //임시
-            int serial = 8; //임시
+            string lotid = "SC20231205"; //임시
+            int serial = 2; //임시
 
 			switch (mode)
             {
