@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using System.Net;
 
+
 namespace Server
 {
     public class Program
@@ -23,13 +24,14 @@ namespace Server
                 });
             });
 
-            //이거 추가됨
+            //DB통신 추가
             //appsetting.json --> connectionString
             var provider = builder.Services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
             builder.Services.AddDbContext<Total_historyContext>(item => item.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
-          
+            //signalR 추가
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -47,6 +49,9 @@ namespace Server
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //signalR 경로 추가
+            app.UseEndpoints(endpoints => { endpoints.MapHub<SensorHub>("/SensorHub"); });
 
             app.MapControllerRoute(
                 name: "default",

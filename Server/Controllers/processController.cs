@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Server.Models;
@@ -12,16 +13,19 @@ namespace Server.Controllers
     [ApiController]
     public class processController : ControllerBase
     {
-        //DB와 연결
-        private readonly Total_historyContext ProcessDB;
-        public processController(Total_historyContext processDB)
-        {
-            ProcessDB = processDB;
-        }
+		//DB와 연결, 허브와 연결
+		private readonly Total_historyContext ProcessDB;
+		private readonly IHubContext<SensorHub> _hubContext;
 
-        // 센서값 저장 및 불량여부 기준 센서값 판단
-        // POST pi/<ValuesController>/2/값
-        [HttpPost("{id}")]
+		public processController(Total_historyContext processDB, IHubContext<SensorHub> hubContext)
+		{
+			ProcessDB = processDB;
+			_hubContext = hubContext;
+		}
+
+		// 센서값 저장 및 불량여부 기준 센서값 판단
+		// POST pi/<ValuesController>/2/값
+		[HttpPost("{id}")]
         public async Task<string> setData(int id, processModel processModel)
         {
             //받은 값
@@ -36,9 +40,10 @@ namespace Server.Controllers
             {
                 await updateDB(cmd, id); //process 데이터 생성, 시작 시간 DB에 저장
                 await updateDB("setid", id); //idx 저장
-                ////main화면 공정 작동중으로 변경
+				////main화면 공정 작동중으로 변경
+				await _hubContext.Clients.All.SendAsync("WorkingState", id, "working");
 
-                s.msg = "ok";
+				s.msg = "ok";
                 s.statusCode = 200;
             }
             else if(cmd == "end")
@@ -46,28 +51,32 @@ namespace Server.Controllers
                 //종료시간 DB에 저장, 소요시간 계산, 소요시간 DB에 저장, 센서값 DB에 저장
                 await updateDB(cmd, id, null, value);
 
-                //불량 여부 판단
-                bool defective = false;
+				////센서값 화면에 표시
+				await _hubContext.Clients.All.SendAsync("setValue", id, "setValue");
+
+				////불량 여부 판단
+				bool defective = false;
+
                 if (defective == true) //불량품
                 {
                     //등급외 DB 저장
                     await updateDB("grade", id, "등외");
                     //전체공정 종료 시간 DB 저장
-                    SensorController sse = new SensorController(ProcessDB);
+                    SensorController sse = new SensorController(ProcessDB, _hubContext);
                     await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
 
                     s.msg = "fail";
                     s.statusCode = 200;
                 }
                 else if(defective == false){ //양품
-                    if(id == 4) // 마지막 공정일 경우
+                    if(id == 6) // 마지막 공정일 경우
                     {
-                        //등급 판단 //등급 A, B, C, D
+                        ////등급 판단 //등급 A, B, C, D
                         string grade = "A";
                         //등급값 DB저장
                         await updateDB("grade", id, grade);
 
-                        //왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
+                        ////왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
                         //결과 
                         if (grade == "A" || grade == "B")
                         {
@@ -81,10 +90,15 @@ namespace Server.Controllers
                         }
                         else
                         {
-                            //error
-                        }
-                    }
-                    else
+							//error
+							s.msg = "sentence errer";
+							s.statusCode = 404;
+						}
+
+						////화면에 lotid, 씨리얼 초기화 
+                        
+					}
+					else
                     {
                         s.msg = "pass";
                         s.statusCode = 200;
@@ -92,31 +106,68 @@ namespace Server.Controllers
                 }
                 else
                 {
-                    //error
-                }
-                //센서값 화면에 표시 (불량여부,소요시간 등도 가능)
-                //main화면 공정 끝으로 변경
-            }
+					//error
+					s.msg = "sentence errer";
+					s.statusCode = 404;
+				}
+				////(불량여부,소요시간 등 화면에 표시) (할지말지 안정함)
+				////main화면 공정 끝으로 변경
+				await _hubContext.Clients.All.SendAsync("WorkingState", id, "end");
+			}
             else
             {
                 //error
-
-                //s.msg = "sentence error";
-                //s.statusCode = 500;
+                s.msg = "sentence error";
+                s.statusCode = 404;
             }
 
             return JsonSerializer.Serialize(s);
         }
 
-/*****************************************************DB Update**************************************************************/
-        public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
-        {
-            //Lot Id를 이용햐여 데이터 불러오기 (임시)
-            // id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
-            string lotid = "Semiconductor2023120101";
-            int serial = 5;
+		[HttpGet("{id}")]
+		public string GetMessage()
+		{
+			ResponseModel r = new ResponseModel();
 
-            switch (mode)
+			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = "Semiconductor2023120201"; //임시
+			int serial = 8; //임시
+
+			bool defective = false; //공정 2가 양품이냐 불량이냐 (임시)
+			////DB에서 공정2의 값 가져오기
+            var getProcess2Velue = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+
+			if (getProcess2Velue == null)
+			{
+                //error
+				//return;
+			}
+
+			////양품, 불량 판단
+            // if (getProcess2Velue.value < 불량판단값)....
+
+			if (defective == false) //양품
+			{
+				r.msg = "pass";
+				r.statusCode = 500;
+			}
+			else                    //불량품
+			{
+				r.msg = "fail";
+				r.statusCode = 200;
+			}
+
+			return JsonSerializer.Serialize(r);
+		}
+
+		/*****************************************************DB Update**************************************************************/
+		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
+        {
+            ////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+            string lotid = "Semiconductor2023120201"; //임시
+            int serial = 8; //임시
+
+			switch (mode)
             {
                 case "start":
                     switch (id)
@@ -241,8 +292,12 @@ namespace Server.Controllers
 
             DateTime now = DateTime.Now;
             updateData.end_time = now;
-            DateTime zero = new DateTime(1400, 01, 01, 00, 00, 00); //임시
-            updateData.spend_time = zero + (now - updateData.start_time); //임시
+
+            long timeSpan = (now - updateData.start_time).Ticks;
+			int sec = (int)timeSpan/10000000;
+            double misec = timeSpan%10000000;
+            string spendtime = sec + "." + misec;
+            updateData.spend_time = spendtime;
             updateData.value = value;
               
             ProcessDB.Update(updateData);

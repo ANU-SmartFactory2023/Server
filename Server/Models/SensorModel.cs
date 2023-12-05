@@ -2,7 +2,7 @@
 {
     public class SensorModel
     {
-        public string Name { get; set; }
-        public string State { get; set; }
+        public string sensorName { get; set; }
+        public string sensorState { get; set; }
     }
 }
