@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 using System.Text.Json;
@@ -9,11 +10,14 @@ namespace Server.Controllers
     [ApiController]
     public class SensorController : ControllerBase
     {
-        //DB와 연결
+        //DB와 연결, 허브와 연결
         private readonly Total_historyContext ProcessDB;
-        public SensorController(Total_historyContext processDB)
+        private readonly IHubContext<SensorHub> _hubContext;
+
+        public SensorController(Total_historyContext processDB, IHubContext<SensorHub> hubContext)
         {
             ProcessDB = processDB;
+            _hubContext = hubContext;
         }
 
         // POST pi/<ValuesController>/2/값
@@ -21,8 +25,8 @@ namespace Server.Controllers
         public async Task<string> Post(int id, SensorModel sensorModel)
         {
             //받아온 값
-            string name = sensorModel.Name;
-            string state = sensorModel.State;
+            string name = sensorModel.sensorName;
+            string state = sensorModel.sensorState;
 
             //답장용
             ResponseModel r = new ResponseModel();
@@ -32,45 +36,55 @@ namespace Server.Controllers
 
             if (state == "on")
             {
-                ////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
+				////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
+				await _hubContext.Clients.All.SendAsync("DetectState",id, "detected");
 
-                if (id == 0)
+				if (id == 1)
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
+                    ////main화면 lot id, 씨리얼 번호 띄우기
+                    
+
                     ////main화면 start버튼 활성화
-                    ////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 하것지
+                    await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
+
+                    ////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 or 공정 종료하면
+                 
                 }
 
             }
             else if(state == "off")
             {
-                ////main화면 물체 없음 상태로 변경
+				////main화면 물체 없음 상태로 변경
+				await _hubContext.Clients.All.SendAsync("DetectState", id, "noting");
 
-                if (id == 4)
+				if (id == 6)
                 {
                     await updateEndtime(); // 전체공정 end time 저장
-                }
-            }
+
+					////화면에 lotid, 씨리얼 초기화 
+				}
+			}
             else
             {
-                //error
-                r.msg = "error";
-                r.statusCode = 400;
-            }
+				//error
+				r.msg = "sentence errer";
+				r.statusCode = 404;
+			}
 
 
             return JsonSerializer.Serialize(r);
         }
+		
+		/*****************************************************DB Update**************************************************************/
 
-        /*****************************************************DB Update**************************************************************/
-
-        public async Task LotidCreate() //Lot Id 부여 (데이터 생성)
+		public async Task LotidCreate() //Lot Id 부여 (데이터 생성)
         {
             DateTime date = DateTime.Now.Date; //오늘 날짜
             string datenum = date.Year.ToString() + date.Month.ToString("00") + date.Day.ToString("00");
 
-            // 검색어로 필터링
+            // 검색
             var semiconductor = ProcessDB.Total_historyModel.Where(c => c.lot_id.Contains(datenum.ToString())).ToList();
 
             //설정할 lotid
@@ -104,16 +118,13 @@ namespace Server.Controllers
         {
             DateTime now = DateTime.Now;
 
-            ////Lot Id를 이용햐여 데이터 불러오기 (임시)
-            //// id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
-            string lotid = "Semiconductor2023120101";
-            int serial = 5;
+			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = "Semiconductor2023120201"; //임시
+			int serial = 8; //임시
 
-            var updateData = ProcessDB.Total_historyModel.Where(
+			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)
                 .FirstOrDefault(); 
-
-            //화면에 lotid, 씨리얼 초기화 
 
             if (updateData == null)
             {
@@ -123,11 +134,19 @@ namespace Server.Controllers
             else
             {
                 updateData.end_time = now; //값 변경 
-                DateTime zero = new DateTime(1400, 01, 01, 00, 00, 00); //임시
-                updateData.spend_time = zero + (now - new DateTime(2023, 11, 30, 11, 14, 38));  ////아직 시작시간 저장하는게 없어서 임시
-                ////updateData.spend_time = zero + (now - updateData.start_time); ////아직 시작시간 저장하는게 없어서
+                DateTime daltl = new DateTime(2023, 12, 02, 13, 48, 12); ////아직 시작시간 저장하는게 없어서 임시
+                //DateTime starttime = updateData.start_time;
+				long timeSpan = (now - daltl).Ticks;
+				int min = (int)(timeSpan / (10000000*60));
+                double etc = timeSpan % (10000000 * 60);
+				int sec = (int)(etc / 10000000);
+				double misec = etc % 10000000;
+				
+				string spendtime = min + ":" + sec + "." + misec;
+				updateData.spend_time = spendtime;
+				updateData.spend_time = spendtime;
 
-                ProcessDB.Update(updateData); //업데이트
+				ProcessDB.Update(updateData); //업데이트
                 await ProcessDB.SaveChangesAsync();
 
             }

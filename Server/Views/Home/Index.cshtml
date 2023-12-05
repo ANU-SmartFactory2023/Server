@@ -401,18 +401,12 @@
 <divbutton button class="fullHistoryButton" onclick="openNewWindow()">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton" onclick="openNewWindow()">개별 이력</divbutton>
 
+<!--예외처리해야함. DB에 아무것도 없을 때 불러올 수 없다고 오류남-->
 <div class="lotSerialBox">
-	@foreach (var historyItem in Model.Total_historyData)
-	{
-		<div class="lotSerialLabel">LOT ID : @historyItem.lot_id</div>
-		<!-- 여기에 다른 필요한 출력 항목 추가 -->
-	}
-	@foreach (var historyItem in Model.Total_historyData)
-	{
-	<div class="lotSerialLabel">SERIAL : @historyItem.serial</div>
-	<!-- SERIAL 값이 있다면 여기에 추가하세요 -->
-	}
+	<div class="lotSerialLabel">LOT ID : @Model.Total_historyData[Model.Total_historyData.Count -1].lot_id</div>
+	<div class="lotSerialLabel">SERIAL : @Model.Total_historyData[Model.Total_historyData.Count - 1].serial</div>
 </div>
+
 
 <div class="GradeBox1">
 	<div class="GradeLabel1">1등급 :</div>
@@ -444,8 +438,8 @@
 	<div class="subBox">
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 :</div>
-			<div class="labelBox">불량품 :</div>
+			<div class="labelBox">총수량 : @Model.process1Data.Count</div>
+			<div class="labelBox">불량품 : </div>
 			<div class="labelBox">불량률 :</div>
 		</div>
 	</div>
@@ -454,7 +448,7 @@
 	<div class="subBox">
 		<div class="processInfo">포토, 식각 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 :</div>
+			<div class="labelBox">총수량 : @Model.process2Data.Count</div>
 			<div class="labelBox">불량품 :</div>
 			<div class="labelBox">불량률 :</div>
 		</div>
@@ -464,7 +458,7 @@
 	<div class="subBox">
 		<div class="processInfo">증착, 금속배선 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 :</div>
+			<div class="labelBox">총수량 : @Model.process3Data.Count</div>
 			<div class="labelBox">불량품 :</div>
 			<div class="labelBox">불량률 :</div>
 		</div>
@@ -474,7 +468,7 @@
 	<div class="subBox">
 		<div class="processInfo">EDS, 패키징 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 :</div>
+			<div class="labelBox">총수량 : @Model.process4Data.Count</div>
 			<div class="labelBox">불량품 :</div>
 			<div class="labelBox">불량률 :</div>
 		</div>
@@ -527,3 +521,77 @@
 		<div class="processInfo">온도</div>
 	</div>
 </div>
+
+
+<!-- HTML 파일에서 SignalR 클라이언트 코드를 작성 -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.10/signalr.min.js"></script>
+
+<script>
+	const connection = new signalR.HubConnectionBuilder()
+		.withUrl("/SensorHub") // 위에서 매핑한 허브 경로
+		.build();
+
+	connection.start().then(() => { //연결 확인
+		@*
+		const startButton = document.querySelector('.startButton');
+		startButton.textContent = "test";
+		*@
+	}).catch(err => console.error(err.toString()));
+
+	connection.on("ActivateButton", function (buttonState) {
+		// 여기서 버튼의 색상이나 활성화 여부 등을 변경
+		if (buttonState === "startButton") {
+			const startButton = document.querySelector('.startButton');
+			startButton.style.backgroundColor = '#00FF00'; // 색상을 원하는 값으로 변경
+		}
+		else if (buttonState === "pushbutton"){
+			//start버튼 누르면 버튼 누름 상태로 변경(화면변경, startController가 알아야함)
+		}
+		else if (buttonState === "endbutton"){
+			//start버튼 비활성화
+		}
+	});
+	connection.on("DetectState", function (id, state) {
+		if (state === "detected") {
+			if (id == 1) {
+				//id에 따라 물체감지 상태로 변경
+			}
+			
+		}
+		else if (state == "noting"){
+			if(id == 1){
+				// id에 따라 물체없음 상태로 변경
+			}
+		}
+	});
+	connection.on("WorkingState", function (id, state) {
+		if (state === "working") {
+			if (id == 1) {
+				// id에 따라 공정 작동중으로 변경
+			}
+		}
+		else if (state === "end"){
+			if (id == 1) {
+				// id에 따라 공정 끝 상태로 표시
+			}
+		}
+	});
+	connection.on("setValue", function (id, setValue) {
+		if (setValue === "setValue ") {
+			if (id == 1) {
+				// id에 따라 센서값 화면에 표시
+			}
+		}
+	});
+	connection.on("SetLotID", function (state) {
+		if (state === "start") {
+			// DB에서 마지막 값을 가져와 lot id, serial 값 띄우기
+		}
+		else if (state === "end") {
+			// lotid, serial 값 화면에서 지우기
+		}
+	});
+
+			// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+</script>
