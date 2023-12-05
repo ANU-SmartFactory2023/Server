@@ -69,7 +69,7 @@ namespace Server.Controllers
                     s.statusCode = 200;
                 }
                 else if(defective == false){ //양품
-                    if(id == 4) // 마지막 공정일 경우
+                    if(id == 6) // 마지막 공정일 경우
                     {
                         ////등급 판단 //등급 A, B, C, D
                         string grade = "A";
@@ -94,8 +94,11 @@ namespace Server.Controllers
 							s.msg = "sentence errer";
 							s.statusCode = 404;
 						}
-                    }
-                    else
+
+						////화면에 lotid, 씨리얼 초기화 
+                        
+					}
+					else
                     {
                         s.msg = "pass";
                         s.statusCode = 200;
@@ -107,7 +110,7 @@ namespace Server.Controllers
 					s.msg = "sentence errer";
 					s.statusCode = 404;
 				}
-				////센서값 화면에 표시 (불량여부,소요시간 등도 가능)
+				////(불량여부,소요시간 등 화면에 표시) (할지말지 안정함)
 				////main화면 공정 끝으로 변경
 				await _hubContext.Clients.All.SendAsync("WorkingState", id, "end");
 			}
@@ -126,9 +129,22 @@ namespace Server.Controllers
 		{
 			ResponseModel r = new ResponseModel();
 
-			bool defective = false; //공정 2가 양품이냐 불량이냐 
+			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = "Semiconductor2023120201"; //임시
+			int serial = 8; //임시
+
+			bool defective = false; //공정 2가 양품이냐 불량이냐 (임시)
 			////DB에서 공정2의 값 가져오기
+            var getProcess2Velue = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+
+			if (getProcess2Velue == null)
+			{
+                //error
+				//return;
+			}
+
 			////양품, 불량 판단
+            // if (getProcess2Velue.value < 불량판단값)....
 
 			if (defective == false) //양품
 			{
@@ -147,12 +163,11 @@ namespace Server.Controllers
 		/*****************************************************DB Update**************************************************************/
 		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
-            ////Lot Id를 이용햐여 데이터 불러오기 (임시)
-            //// id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
-            string lotid = "Semiconductor2023120201";
-            int serial = 8;
+            ////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+            string lotid = "Semiconductor2023120201"; //임시
+            int serial = 8; //임시
 
-            switch (mode)
+			switch (mode)
             {
                 case "start":
                     switch (id)

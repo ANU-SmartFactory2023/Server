@@ -43,6 +43,9 @@ namespace Server.Controllers
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
+                    ////main화면 lot id, 씨리얼 번호 띄우기
+                    
+
                     ////main화면 start버튼 활성화
                     await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
 
@@ -59,8 +62,10 @@ namespace Server.Controllers
 				if (id == 6)
                 {
                     await updateEndtime(); // 전체공정 end time 저장
-                }
-            }
+
+					////화면에 lotid, 씨리얼 초기화 
+				}
+			}
             else
             {
 				//error
@@ -113,16 +118,13 @@ namespace Server.Controllers
         {
             DateTime now = DateTime.Now;
 
-            ////Lot Id를 이용햐여 데이터 불러오기 (임시)
-            //// id? lot_id? 씨리얼? 뭘로 찾아야하지? 1. DB에서 가져온다,  2. 프로그램에 변수로 저장해 놓는다.
-            string lotid = "Semiconductor2023120201";
-            int serial = 8;
+			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = "Semiconductor2023120201"; //임시
+			int serial = 8; //임시
 
-            var updateData = ProcessDB.Total_historyModel.Where(
+			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)
                 .FirstOrDefault(); 
-
-            //화면에 lotid, 씨리얼 초기화 
 
             if (updateData == null)
             {

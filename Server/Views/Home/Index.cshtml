@@ -578,10 +578,18 @@
 		}
 	});
 	connection.on("setValue", function (id, setValue) {
-		if (state === "setValue ") {
+		if (setValue === "setValue ") {
 			if (id == 1) {
 				// id에 따라 센서값 화면에 표시
 			}
+		}
+	});
+	connection.on("SetLotID", function (state) {
+		if (state === "start") {
+			// DB에서 마지막 값을 가져와 lot id, serial 값 띄우기
+		}
+		else if (state === "end") {
+			// lotid, serial 값 화면에서 지우기
 		}
 	});
 
