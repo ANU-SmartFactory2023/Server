@@ -844,37 +844,83 @@
 			//start버튼 비활성화
 		}
 	});
-	connection.on("DetectState", function (id, state) {
+	connection.on("DetectState", function (name, state) {
 		if (state === "detected") {
-			if (id == 1) {
+			if (name == "photolithography") {
+				//id에 따라 물체감지 상태로 변경
+			}
+			else if (name == "etching") {
+				//id에 따라 물체감지 상태로 변경
+			}
+			else if (name == "eds") {
+				//id에 따라 물체감지 상태로 변경
+			} 
+			else if (name == "euvLithography") {
 				//id에 따라 물체감지 상태로 변경
 			}
 			
 		}
 		else if (state == "noting"){
-			if(id == 1){
+			if (name == "photolithography") {
+				// id에 따라 물체없음 상태로 변경
+			}
+			else if (name == "etching") {
+				// id에 따라 물체없음 상태로 변경
+			}
+			else if (name == "eds") {
+				// id에 따라 물체없음 상태로 변경
+			}
+			else if (name == "euvLithography") {
 				// id에 따라 물체없음 상태로 변경
 			}
 		}
 	});
-	connection.on("WorkingState", function (id, state) {
+	connection.on("WorkingState", function (name, state) {
 		if (state === "working") {
-			if (id == 1) {
+			if (name == "photolithography") {
+				// id에 따라 공정 작동중으로 변경
+			}
+			else if (name == "etching") {
+				// id에 따라 공정 작동중으로 변경
+			}
+			else if (name == "eds") {
+				// id에 따라 공정 작동중으로 변경
+			}
+			else if (name == "euvLithography") {
 				// id에 따라 공정 작동중으로 변경
 			}
 		}
 		else if (state === "end"){
-			if (id == 1) {
+			if (name == "photolithography") {
+				// id에 따라 공정 끝 상태로 표시
+			}
+			else if (name == "etching") {
+				// id에 따라 공정 끝 상태로 표시
+			}
+			else if (name == "eds") {
+				// id에 따라 공정 끝 상태로 표시
+			}
+			else if (name == "euvLithography") {
 				// id에 따라 공정 끝 상태로 표시
 			}
 		}
 	});
-	connection.on("setValue", function (id, setValue) {
+	connection.on("setValue", function (name, setValue) {
 		if (setValue === "setValue ") {
-			if (id == 1) {
+			if (name == "photolithography") {
+				// id에 따라 센서값 화면에 표시
+			}
+			else if (name == "etching") {
+				// id에 따라 센서값 화면에 표시
+			}
+			else if (name == "eds") {
+				// id에 따라 센서값 화면에 표시
+			}
+			else if (name == "euvLithography") {
 				// id에 따라 센서값 화면에 표시
 			}
 		}
+		
 	});
 	connection.on("SetLotID", function (state) {
 		if (state === "start") {
@@ -886,4 +932,30 @@
 	});
 
 			// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+</script>
+
+
+<script>
+	// 버튼 클릭 시 서버로 요청을 보내고 isPressed 값을 변경하는 함수
+	document.querySelector('.startButton').addEventListener('click', function () {
+		// 버튼 비활성화 추가해야됨 (text = 진행중... color = )
+		// 시작시간 저장
+		//
+		// 서버로 요청을 보내고 응답을 받아옵니다.
+		fetch('/pi/start/toggle', {
+			method: 'POST', // 또는 'GET' 등 요청 메서드 지정
+		})
+			.then(response => response.json())
+			.then(data => {
+				// 응답에서 받아온 데이터를 처리 (이 부분은 상황에 따라 다를 수 있습니다.)
+				console.log(data);
+				// 이후 필요한 동작을 수행하세요.
+				const startButton = document.querySelector('.startButton');
+				startButton.style.backgroundColor = 'red'; // 색상을 원하는 값으로 변경
+
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+	});
 </script>

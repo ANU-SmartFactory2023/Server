@@ -39,7 +39,7 @@ namespace Server.Controllers
 				////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
 				await _hubContext.Clients.All.SendAsync("DetectState",id, "detected");
 
-				if (id == 1)
+				if (id == 0) //나중에 수정해야함
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
@@ -58,15 +58,14 @@ namespace Server.Controllers
             else if(state == "off")
             {
 				////main화면 물체 없음 상태로 변경
-				await _hubContext.Clients.All.SendAsync("DetectState", id, "noting");
+				await _hubContext.Clients.All.SendAsync("DetectState", name, "noting");
+			}
+            else if(state == "finalEnd")
+            {
+				await updateEndtime(); // 전체공정 end time 저장
 
-				if (id == 4) //마지막 공정일 경우 // 수정 필요
-				{
-					await updateEndtime(); // 전체공정 end time 저장
-
-					////화면에 lotid, 씨리얼 초기화 
-					await _hubContext.Clients.All.SendAsync("SetLotID", "end");
-				}
+				////화면에 lotid, 씨리얼 초기화 
+				await _hubContext.Clients.All.SendAsync("SetLotID", "end");
 			}
             else
             {
@@ -121,8 +120,19 @@ namespace Server.Controllers
             DateTime now = DateTime.Now;
 
 			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-			string lotid = "SC20231205"; //임시
-			int serial = 2; //임시
+			string lotid = ""; //임시
+			int serial = 0; //임시
+			// 컬렉션이 비어있지 않은지 확인
+			if (ProcessDB.Total_historyModel.Any())
+			{
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+				lotid = lastData.lot_id;
+                serial = lastData.serial;
+			}
+            else
+            {
+                return;
+            }
 
 			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)
