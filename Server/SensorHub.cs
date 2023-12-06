@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Server
 {
@@ -9,17 +10,17 @@ namespace Server
 		{
             await Clients.All.SendAsync("ActivateButton", buttonState);
         }
-		public async Task SendDetectState(int id, string state) // 센서감지
+		public async Task SendDetectState(string name, string state) // 센서감지
 		{
-			await Clients.All.SendAsync("DetectState", id, state);
+			await Clients.All.SendAsync("DetectState", name, state);
 		}
-		public async Task SendWorking(int id, string state) //공정
+		public async Task SendWorking(string name, string state) //공정
 		{
-			await Clients.All.SendAsync("WorkingState", id, state);
+			await Clients.All.SendAsync("WorkingState", name, state);
 		}
-		public async Task SendSenSor(int id, string setValue) //센서값
+		public async Task SendSenSor(string name, string setValue) //센서값
 		{
-			await Clients.All.SendAsync("setValue", id, setValue);
+			await Clients.All.SendAsync("setValue", name, setValue);
 		}
 		public async Task SetLotID(string state) //lot id, Serial
 		{

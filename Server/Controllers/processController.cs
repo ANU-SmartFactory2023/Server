@@ -41,7 +41,7 @@ namespace Server.Controllers
                 await updateDB(cmd, id); //process 데이터 생성, 시작 시간 DB에 저장
                 await updateDB("setid", id); //idx 저장
 				////main화면 공정 작동중으로 변경
-				await _hubContext.Clients.All.SendAsync("WorkingState", id, "working");
+				await _hubContext.Clients.All.SendAsync("WorkingState", name, "working");
 
 				s.msg = "ok";
                 s.statusCode = 200;
@@ -52,29 +52,32 @@ namespace Server.Controllers
                 await updateDB(cmd, id, null, value);
 
 				////센서값 화면에 표시
-				await _hubContext.Clients.All.SendAsync("setValue", id, "setValue");
+				await _hubContext.Clients.All.SendAsync("setValue", name, "setValue");
 
-				////불량 여부 판단
 				bool defective = false;
+				////불량 여부 판단
 
-                if (defective == true) //불량품
+
+				if (defective == true) //불량품
                 {
                     //등급외 DB 저장
                     await updateDB("grade", id, "등외");
-                    //전체공정 종료 시간 DB 저장
-                    SensorController sse = new SensorController(ProcessDB, _hubContext);
-                    await sse.updateEndtime(); //이렇게 써도되나? 안될건 없지만 합치고싶다 클래스로 묶어서 근데 그러믄 Controller가 하나더 있어야하는건데 이게맞나 싶고 으에에에ㅔㄱ
 
-                    s.msg = "fail";
+					////화면에 lotid, 씨리얼 초기화 
+					await _hubContext.Clients.All.SendAsync("SetLotID", "end");
+
+					s.msg = "fail";
                     s.statusCode = 200;
                 }
                 else if(defective == false){ //양품
-                    if(id == 6) // 마지막 공정일 경우
-                    {
-                        ////등급 판단 //등급 A, B, C, D
+                    if(id == 4) // 마지막 공정일 경우  -> 수정해야함
+					{
                         string grade = "A";
-                        //등급값 DB저장
-                        await updateDB("grade", id, grade);
+						////등급 판단 //등급 A, B, C, D
+
+
+						//등급값 DB저장
+						await updateDB("grade", id, grade);
 
                         ////왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
                         //결과 
@@ -112,7 +115,7 @@ namespace Server.Controllers
 				}
 				////(불량여부,소요시간 등 화면에 표시) (할지말지 안정함)
 				////main화면 공정 끝으로 변경
-				await _hubContext.Clients.All.SendAsync("WorkingState", id, "end");
+				await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
 			}
             else
             {
@@ -130,8 +133,17 @@ namespace Server.Controllers
 			ResponseModel r = new ResponseModel();
 
 			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-			string lotid = "Semiconductor2023120201"; //임시
-			int serial = 8; //임시
+			string lotid = ""; //임시
+			int serial = 0; //임시
+							// 컬렉션이 비어있지 않은지 확인
+			if (ProcessDB.Total_historyModel.Any())
+			{
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+				lotid = lastData.lot_id;
+				serial = lastData.serial;
+
+
+			}
 
 			bool defective = false; //공정 2가 양품이냐 불량이냐 (임시)
 			////DB에서 공정2의 값 가져오기
@@ -149,7 +161,7 @@ namespace Server.Controllers
 			if (defective == false) //양품
 			{
 				r.msg = "pass";
-				r.statusCode = 500;
+				r.statusCode = 200;
 			}
 			else                    //불량품
 			{
@@ -163,9 +175,20 @@ namespace Server.Controllers
 		/*****************************************************DB Update**************************************************************/
 		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
-            ////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-            string lotid = "Semiconductor2023120201"; //임시
-            int serial = 8; //임시
+			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = ""; //임시
+			int serial = 0; //임시
+			// 컬렉션이 비어있지 않은지 확인
+			if (ProcessDB.Total_historyModel.Any())
+			{
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+				lotid = lastData.lot_id;
+				serial = lastData.serial;
+			}
+			else
+			{
+				return;
+			}
 
 			switch (mode)
             {
