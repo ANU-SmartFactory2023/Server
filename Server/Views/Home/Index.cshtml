@@ -9,6 +9,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+	// 개별 이력 버튼 마우스 호버 효과 적용 코드
 	$(document).ready(function () {
 		$(".individualHistoryButton").mouseover(function () {
 			$(".individualHistoryButton .dropdown-content").stop().slideDown("fast");
@@ -87,21 +88,114 @@
 		newWindow.document.write('</table>');
 		} else if (dataType === 'individualHistory') {
 			newWindow.document.write('<h2>개별 이력 데이터</h2>');
-			// 여기에 해당 데이터를 가져와서 출력하는 코드를 추가하세요.
 		}
 		else if (dataType === '산화 공정') {
+			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<h2>산화 공정 데이터</h2>');
-			// 데이터를 가져와서 출력하는 코드를 추가하세요.
+			newWindow.document.write('<table>');
+			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>LOT ID</th>');
+			newWindow.document.write('<th>SERIAL</th>');
+			newWindow.document.write('<th>시작 시간</th>');
+			newWindow.document.write('<th>끝난 시간</th>');
+			newWindow.document.write('<th>소요 시간</th>');
+			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('</tr>');
+
+	@foreach (var process1Item in Model.process1Data)
+	{
+		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process1Item.lot_id' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.serial' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.start_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.end_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.spend_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.value' + '</td>');
+		@:newWindow.document.write('</tr>');
+	}
+		newWindow.document.write('</table>');
+
 		} else if (dataType === '포토 공정') {
 			newWindow.document.write('<h2>포토 공정 데이터</h2>');
-			// 데이터를 가져와서 출력하는 코드를 추가하세요.
+			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
+			newWindow.document.write('<table>');
+			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>LOT ID</th>');
+			newWindow.document.write('<th>SERIAL</th>');
+			newWindow.document.write('<th>시작 시간</th>');
+			newWindow.document.write('<th>끝난 시간</th>');
+			newWindow.document.write('<th>소요 시간</th>');
+			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('</tr>');
+
+	@foreach (var process2Item in Model.process2Data)
+	{
+		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process2Item.lot_id' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.serial' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.start_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.end_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.spend_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.value' + '</td>');
+		@:newWindow.document.write('</tr>');
+	}
+		newWindow.document.write('</table>');
+
 		} else if (dataType === '증착 공정') {
 			newWindow.document.write('<h2>증착 공정 데이터</h2>');
-			// 데이터를 가져와서 출력하는 코드를 추가하세요.
+			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
+			newWindow.document.write('<table>');
+			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>LOT ID</th>');
+			newWindow.document.write('<th>SERIAL</th>');
+			newWindow.document.write('<th>시작 시간</th>');
+			newWindow.document.write('<th>끝난 시간</th>');
+			newWindow.document.write('<th>소요 시간</th>');
+			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('</tr>');
+
+	@foreach (var process3Item in Model.process3Data)
+	{
+		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process3Item.lot_id' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.serial' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.start_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.end_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.spend_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.value' + '</td>');
+		@:newWindow.document.write('</tr>');
+	}
+		newWindow.document.write('</table>');
+
 		} else if (dataType === '패키지 공정') {
 			newWindow.document.write('<h2>패키지 공정 데이터</h2>');
-			// 데이터를 가져와서 출력하는 코드를 추가하세요.
-		}
+			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
+			newWindow.document.write('<table>');
+			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>LOT ID</th>');
+			newWindow.document.write('<th>SERIAL</th>');
+			newWindow.document.write('<th>시작 시간</th>');
+			newWindow.document.write('<th>끝난 시간</th>');
+			newWindow.document.write('<th>소요 시간</th>');
+			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('</tr>');
+
+	@foreach (var process4Item in Model.process4Data)
+	{
+		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process4Item.lot_id' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.serial' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.start_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.end_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.spend_time' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.value' + '</td>');
+		@:newWindow.document.write('</tr>');
+	}
+		newWindow.document.write('</table>');
+
+	} else if (dataType === 'change') {
+		newWindow.document.write('<h2>불량 기준값</h2>');
+	}
 		newWindow.document.write('<div style="overflow: auto;">');
 		newWindow.document.write('<table>');
 		// 테이블 출력 코드 추가
@@ -192,7 +286,7 @@
 		margin-left: 5%; /* 왼쪽 여백 조절 */
 		margin-right: 5%; /* 오른쪽 여백 조절 */
 	}
-
+	/* 화살표 */
 	.arrow {
 		width: 20px;
 		height: 0;
@@ -201,7 +295,7 @@
 		margin: 0 18px;
 		transform: translateY(-15px); /* 화살표를 위로 15픽셀 이동 */
 	}
-
+	/* 원 */
 	.circle {
 		width: 20px;
 		height: 20px;
@@ -346,8 +440,7 @@
 		position: absolute;
 		top: 150px;
 		left: 90px;
-		/* 가로 길이를 설정합니다. */
-		width: 200px;
+		width: 200px; /* 가로 길이를 설정합니다. */
 		display: block;
 		flex-direction: column;
 		align-items: center;
@@ -443,7 +536,7 @@
 		font-weight: bold;
 		margin-bottom: 5px;
 	}
-
+	/* 등급 상자 */
 	.GradeBox1 {
 		position: absolute;
 		top: 530px;
@@ -524,6 +617,7 @@
 		padding-left: 10px;
 	}
 
+	/* 시작 버튼 */
 	.startButton {
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
@@ -661,12 +755,48 @@
 			transform: scale(1.05); /* 예시로 1.05배 크기로 확대하도록 설정 */
 		}
 
+	/* 기준 값 변경하기 버튼 */
+	.changeButton {
+		font-weight: bold;
+		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
+		position: absolute;
+		/* 요소의 위쪽에서의 위치를 설정합니다. */
+		top: 850px;
+		/* 요소의 왼쪽에서의 위치를 설정합니다. */
+		left: 1600px;
+		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
+		display: flex;
+		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
+		flex-direction: column;
+		/* align-items 속성을 사용하여 주축 방향으로 요소들을 가운데 정렬합니다. */
+		align-items: center;
+		/* justify-content 속성을 사용하여 교차축 방향으로 요소들을 가운데 정렬합니다. */
+		justify-content: center;
+		/* 세로 길이를 설정합니다. */
+		height: 70px;
+		/* 가로 길이를 설정합니다. */
+		width: 200px;
+		/* box-sizing 속성을 사용하여 요소의 크기 계산 방식을 설정합니다. */
+		box-sizing: border-box;
+		/* cursor 속성을 사용하여 마우스 커서 스타일을 설정합니다. */
+		cursor: pointer;
+		/* 배경 색상을 설정합니다. */
+		background-color: #000;
+		/* 텍스트 색상을 설정합니다. */
+		color: #fff;
+		/* 테두리를 제거합니다. */
+		border: 1px solid #000;
+		/* 테두리의 꼭지점을 둥글게 조절합니다. */
+		border-radius: 5px;
+	}
+
 		/* 버튼이 안으로 들어가는 효과 */
 		.totalProductionButton,
 		.totalDefectRateButton,
 		.startButton,
 		.fullHistoryButton,
-		.individualHistoryButton {
+		.individualHistoryButton,
+		.changeButton{
 			transition: transform 0.3s ease; /* transform 속성에 대한 0.3초 동안의 변화를 부드럽게 적용 */
 		}
 
@@ -674,11 +804,12 @@
 		.totalDefectRateButton:hover,
 		.startButton:hover,
 		.fullHistoryButton:hover,
-		.individualHistoryButton:hover {
+		.individualHistoryButton:hover,
+		.changeButton:hover{
 			transform: scale(0.95); /* hover 상태에서 버튼을 0.95배 축소시킴 */
 		}
 </style>
-
+<!-- 새 윈도우 페이지 뜨게 하는 코드 -->
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 400, 400)">오늘 총 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
 <divbutton button class="startButton">S T A R T</divbutton>
@@ -692,36 +823,38 @@
 		<div>패키지 공정</div>
 	</div>
 </divbutton>
+<divbutton button class="changeButton" onclick="openNewWindow('change', 1300, 900)">기준 값 변경</divbutton>
 
-<!--예외처리해야함. DB에 아무것도 없을 때 불러올 수 없다고 오류남-->
-<div class="lotSerialBox">
-	<div class="lotSerialLabel">LOT ID : @Model.Total_historyData[Model.Total_historyData.Count -1].lot_id</div>
-	<div class="lotSerialLabel">SERIAL : @Model.Total_historyData[Model.Total_historyData.Count - 1].serial</div>
-</div>
+<!-- 랏시리얼 박스의 DB값이 없을 경우 공백으로 처리하는 예외처리 코드 -->
+@if (Model.Total_historyData.Count > 0)
+{
+	<div class="lotSerialBox">
+		<div class="lotSerialLabel">LOT ID : @Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id</div>
+		<div class="lotSerialLabel">SERIAL : @Model.Total_historyData[Model.Total_historyData.Count - 1].serial</div>
+	</div>
+}
+else
+{
+	<div class="lotSerialBox">
+		<div class="lotSerialLabel"></div>
+	</div>
+}
 
 
 <div class="GradeBox1">
-	<div class="GradeLabel1">1등급 :</div>
-	<!-- 총 생산량 값이 있다면 여기에 추가하세요 -->
-	<div><!-- 여기에 총 생산량 값 입력 --></div>
+	<div class="GradeLabel1">A 등급 : @Model.Total_historyData.Count(data => data.grade == "A")</div>
 </div>
 
 <div class="GradeBox2">
-	<div class="GradeLabel2">2등급 :</div>
-	<!-- 총 생산량 값이 있다면 여기에 추가하세요 -->
-	<div><!-- 여기에 총 생산량 값 입력 --></div>
+	<div class="GradeLabel2">B 등급 : @Model.Total_historyData.Count(data => data.grade == "B")</div>
 </div>
 
 <div class="GradeBox3">
-	<div class="GradeLabel3">3등급 :</div>
-	<!-- 총 생산량 값이 있다면 여기에 추가하세요 -->
-	<div><!-- 여기에 총 생산량 값 입력 --></div>
+	<div class="GradeLabel3">C 등급 : @Model.Total_historyData.Count(data => data.grade == "C")</div>
 </div>
 
 <div class="GradeBox4">
-	<div class="GradeLabel4">4등급 :</div>
-	<!-- 총 생산량 값이 있다면 여기에 추가하세요 -->
-	<div><!-- 여기에 총 생산량 값 입력 --></div>
+	<div class="GradeLabel4">D 등급 : @Model.Total_historyData.Count(data => data.grade == "D")</div>
 </div>
 
 
@@ -766,18 +899,25 @@
 		</div>
 	</div>
 
-	<!-- 가로로 긴 상자 추가 -->
+	<!-- 공정 진행 상자 -->
 	<div class="horizontalBox">
 		<div class="processInfo">공정 진행</div>
 
-		<!-- 4개의 원 -->
-		<div class="circle"></div>
-		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
-		<div class="circle"></div>
-		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
-		<div class="circle"></div>
-		<div class="arrow" style="border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
-		<div class="circle"></div>
+		<!-- 첫 번째 원과 화살표 -->
+		<div class="circle" style="margin-left: 110px;"></div>
+		<div class="arrow" style="margin-left: 25px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+
+		<!-- 두 번째 원과 화살표 -->
+		<div class="circle" style="margin-left: 30px;"></div>
+		<div class="circle" style="margin-left: -30px;"></div>
+		<div class="arrow" style="margin-left: -15px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+
+		<!-- 세 번째 원과 화살표 -->
+		<div class="circle" style="margin-left: 80px;"></div>
+		<div class="arrow" style="margin-left: 20px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
+
+		<!-- 네 번째 원 -->
+		<div class="circle" style="margin-left: 80px;"></div>
 	</div>
 
 	<!-- 8 개의 상자 -->
@@ -835,7 +975,7 @@
 		// 여기서 버튼의 색상이나 활성화 여부 등을 변경
 		if (buttonState === "startButton") {
 			const startButton = document.querySelector('.startButton');
-			startButton.style.backgroundColor = '#00FF00'; // 색상을 원하는 값으로 변경
+			startButton.style.backgroundColor = 'green'; // 색상을 원하는 값으로 변경
 		}
 		else if (buttonState === "pushbutton"){
 			//start버튼 누르면 버튼 누름 상태로 변경(화면변경, startController가 알아야함)
