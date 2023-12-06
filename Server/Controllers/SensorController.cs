@@ -39,15 +39,16 @@ namespace Server.Controllers
 				////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
 				await _hubContext.Clients.All.SendAsync("DetectState",id, "detected");
 
-				if (id == 1)
+				if (id == 0) //나중에 수정해야함
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
-                    ////main화면 lot id, 씨리얼 번호 띄우기
-                    
+					////main화면 lot id, 씨리얼 번호 띄우기
+					await _hubContext.Clients.All.SendAsync("SetLotID", "start");
 
-                    ////main화면 start버튼 활성화
-                    await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
+
+					////main화면 start버튼 활성화
+					await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
 
                     ////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 or 공정 종료하면
                  
@@ -57,14 +58,14 @@ namespace Server.Controllers
             else if(state == "off")
             {
 				////main화면 물체 없음 상태로 변경
-				await _hubContext.Clients.All.SendAsync("DetectState", id, "noting");
+				await _hubContext.Clients.All.SendAsync("DetectState", name, "noting");
+			}
+            else if(state == "finalEnd")
+            {
+				await updateEndtime(); // 전체공정 end time 저장
 
-				if (id == 6)
-                {
-                    await updateEndtime(); // 전체공정 end time 저장
-
-					////화면에 lotid, 씨리얼 초기화 
-				}
+				////화면에 lotid, 씨리얼 초기화 
+				await _hubContext.Clients.All.SendAsync("SetLotID", "end");
 			}
             else
             {
@@ -87,13 +88,13 @@ namespace Server.Controllers
             // 검색
             var semiconductor = ProcessDB.Total_historyModel.Where(c => c.lot_id.Contains(datenum.ToString())).ToList();
 
-            //설정할 lotid
-            string lotid = "Semiconductor" + datenum + "01"; 
-            int serial = 0;
+			//설정할 lotid
+			string lotid = "SC" + datenum;
+			int serial = 0;
 
-            //씨리얼
-            //이 날짜에 생산된 것이 있는 지
-            if (semiconductor.Count > 0) //있으면 다음 번호
+			//씨리얼
+			//이 날짜에 생산된 것이 있는 지
+			if (semiconductor.Count > 0) //있으면 다음 번호
             {
                 serial = semiconductor.Count + 1;
             }
@@ -119,8 +120,19 @@ namespace Server.Controllers
             DateTime now = DateTime.Now;
 
 			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
-			string lotid = "Semiconductor2023120201"; //임시
-			int serial = 8; //임시
+			string lotid = ""; //임시
+			int serial = 0; //임시
+			// 컬렉션이 비어있지 않은지 확인
+			if (ProcessDB.Total_historyModel.Any())
+			{
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+				lotid = lastData.lot_id;
+                serial = lastData.serial;
+			}
+            else
+            {
+                return;
+            }
 
 			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)
