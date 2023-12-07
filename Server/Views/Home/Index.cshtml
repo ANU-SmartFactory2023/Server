@@ -193,8 +193,51 @@
 	}
 		newWindow.document.write('</table>');
 
-	} else if (dataType === 'change') {
-		newWindow.document.write('<h2>불량 기준값</h2>');
+		} else if (dataType === 'change') {
+			newWindow.document.write('<style>');
+			newWindow.document.write('.box-container { display: flex; flex-wrap: wrap; }');
+			newWindow.document.write('.box { width: calc(23% - 20px); border-radius: 5px; margin: 10px; padding: 5px; height: 100px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border: 3px solid #4CAF50; box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3); }');
+			newWindow.document.write('.box label { text-align: center; font-weight: bold; margin-bottom: 5px; }');
+			newWindow.document.write('.box input { width: calc(100% - 10px); height: 30px; margin-bottom: 25px; box-sizing: border-box; }');
+			newWindow.document.write('</style>');
+
+			function createBoxContainer() {
+				newWindow.document.write('<div class="box-container">');
+				for (var i = 1; i <= 4; i++) {
+					newWindow.document.write('<div class="box">');
+					newWindow.document.write('<label>Sensor' + i + '</label>');
+					newWindow.document.write('<input type="number" placeholder="숫자를 입력하세요">');
+					newWindow.document.write('</div>');
+				}
+				newWindow.document.write('</div>');
+			}
+
+			newWindow.document.write('<h2>불량 기준값</h2>');
+			createBoxContainer();
+
+			newWindow.document.write('<h2 style="margin-top: 20px;">등급 기준값</h2>');
+			createBoxContainer();
+
+			newWindow.document.write('</div>');
+
+			// 버튼 추가
+			newWindow.document.write('<style>');
+			newWindow.document.write('.custom-button {');
+			newWindow.document.write('  position: fixed;');
+			newWindow.document.write('  right: 35px;');
+			newWindow.document.write('  bottom: 35px;');
+			newWindow.document.write('  background-color: #4CAF50;');
+			newWindow.document.write('  color: #fff;');
+			newWindow.document.write('  padding: 10px;');
+			newWindow.document.write('  border-radius: 10px;');
+			newWindow.document.write('  cursor: pointer;');
+			newWindow.document.write('  transition: background-color 0.3s;');
+			newWindow.document.write('}');
+			newWindow.document.write('.custom-button:hover {');
+			newWindow.document.write('  background-color: #45a049;');
+			newWindow.document.write('}');
+			newWindow.document.write('</style>');
+			newWindow.document.write('<div class="custom-button">값 적용</div>');
 	}
 		newWindow.document.write('<div style="overflow: auto;">');
 		newWindow.document.write('<table>');
@@ -218,7 +261,7 @@
 	header {
 		background-color: #333; /* 헤더의 어두운 배경 */
 		color: #fff; /* 헤더의 흰색 텍스트 */
-		padding: 10px;
+		padding: 0.3vw;
 		text-align: center;
 	}
 
@@ -231,12 +274,15 @@
 		justify-content: center; /* 상자를 수평으로 가운데 정렬 */
 	}
 
-	.subBox, .horizontalBox, .additionalSubBox1, .additionalSubBox2, .additionalSubBox3, .additionalSubBox4, .additionalSubBox5,
+	.subBox1, .subBox2, .subBox3, .subBox4, .horizontalBox, .additionalSubBox1, .additionalSubBox2, .additionalSubBox3, .additionalSubBox4, .additionalSubBox5,
 	.additionalSubBox6, .additionalSubBox7, .additionalSubBox8, .circle, .fullHistoryButton, .GradeBox1, .GradeBox2, .GradeBox3, .GradeBox4, .individualHistoryButton, .startButton, .totalDefectRateButton, .totalProductionButton, .lotSerialBox {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* 은은한 박스 그림자 추가 */
 	}
 
-	.subBox {
+	.subBox1 {
+		position: absolute;
+		top: 0px;
+		left: 0px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -249,6 +295,52 @@
 		border-radius: 10px; /* 테두리 둥글게 조절 */
 	}
 
+	.subBox2 {
+		position: absolute;
+		top: 0px;
+		left: 280px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 300px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+	.subBox3 {
+		position: absolute;
+		top: 0px;
+		left: 560px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 300px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
+
+	.subBox4 {
+		position: absolute;
+		top: 0px;
+		left: 840px;
+		border: 1px solid #000;
+		margin: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		width: 260px;
+		height: 300px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-radius: 10px; /* 테두리 둥글게 조절 */
+	}
 	.processInfo {
 		font-weight: bold;
 		margin-bottom: 20px;
@@ -275,7 +367,7 @@
 	.horizontalBox {
 		position: absolute;
 		top: 330px;
-		left: -45px;
+		left: 10px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -660,7 +752,7 @@
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
 		top: 150px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 1600px;
+		left: 1620px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -695,7 +787,7 @@
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
 		top: 240px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 1600px;
+		left: 1620px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -763,7 +855,7 @@
 		/* 요소의 위쪽에서의 위치를 설정합니다. */
 		top: 850px;
 		/* 요소의 왼쪽에서의 위치를 설정합니다. */
-		left: 1600px;
+		left: 1620px;
 		/* display 속성을 사용하여 Flexbox 레이아웃을 설정합니다. */
 		display: flex;
 		/* flex-direction 속성을 사용하여 주축을 세로로 설정합니다. */
@@ -823,7 +915,7 @@
 		<div>패키지 공정</div>
 	</div>
 </divbutton>
-<divbutton button class="changeButton" onclick="openNewWindow('change', 1300, 900)">기준 값 변경</divbutton>
+<divbutton button class="changeButton" onclick="openNewWindow('change', 950, 500)">기준 값 변경</divbutton>
 
 <!-- 랏시리얼 박스의 DB값이 없을 경우 공백으로 처리하는 예외처리 코드 -->
 @if (Model.Total_historyData.Count > 0)
@@ -860,7 +952,7 @@ else
 
 <div class="wrapperBox">
 	<!-- 첫 번째 상자 -->
-	<div class="subBox">
+	<div class="subBox1">
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process1Data.Count</div>
@@ -870,7 +962,7 @@ else
 	</div>
 
 	<!-- 두 번째 상자 -->
-	<div class="subBox">
+	<div class="subBox2">
 		<div class="processInfo">포토, 식각 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process2Data.Count</div>
@@ -880,7 +972,7 @@ else
 	</div>
 
 	<!-- 세 번째 상자 -->
-	<div class="subBox">
+	<div class="subBox3">
 		<div class="processInfo">증착, 금속배선 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process3Data.Count</div>
@@ -890,7 +982,7 @@ else
 	</div>
 
 	<!-- 네 번째 상자 -->
-	<div class="subBox">
+	<div class="subBox4">
 		<div class="processInfo">EDS, 패키징 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process4Data.Count</div>
@@ -988,30 +1080,38 @@ else
 		if (state === "detected") {
 			if (name == "photolithography") {
 				//id에 따라 물체감지 상태로 변경
+			
 			}
 			else if (name == "etching") {
 				//id에 따라 물체감지 상태로 변경
+			
 			}
 			else if (name == "eds") {
 				//id에 따라 물체감지 상태로 변경
+			
 			} 
 			else if (name == "euvLithography") {
 				//id에 따라 물체감지 상태로 변경
+			
 			}
 			
 		}
 		else if (state == "noting"){
 			if (name == "photolithography") {
 				// id에 따라 물체없음 상태로 변경
+			
 			}
 			else if (name == "etching") {
 				// id에 따라 물체없음 상태로 변경
+				
 			}
 			else if (name == "eds") {
 				// id에 따라 물체없음 상태로 변경
+				
 			}
 			else if (name == "euvLithography") {
 				// id에 따라 물체없음 상태로 변경
+			
 			}
 		}
 	});
