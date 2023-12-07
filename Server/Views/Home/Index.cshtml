@@ -812,7 +812,7 @@
 <!-- 새 윈도우 페이지 뜨게 하는 코드 -->
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 400, 400)">오늘 총 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
-<divbutton button class="startButton">S T A R T</divbutton>
+<button button class="startButton" disabled>S T A R T</button>
 <divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1300, 900)">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton">
 	개별 이력
@@ -904,7 +904,7 @@ else
 		<div class="processInfo">공정 진행</div>
 
 		<!-- 첫 번째 원과 화살표 -->
-		<div class="circle" style="margin-left: 110px;"></div>
+		<div class="circle" data-process="photolithography" style="margin-left: 110px;"></div>
 		<div class="arrow" style="margin-left: 25px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
 
 		<!-- 두 번째 원과 화살표 -->
@@ -975,42 +975,68 @@ else
 		// 여기서 버튼의 색상이나 활성화 여부 등을 변경
 		if (buttonState === "startButton") {
 			const startButton = document.querySelector('.startButton');
+			startButton.disabled = false; // 버튼 활성화
 			startButton.style.backgroundColor = 'green'; // 색상을 원하는 값으로 변경
-		}
-		else if (buttonState === "pushbutton"){
-			//start버튼 누르면 버튼 누름 상태로 변경(화면변경, startController가 알아야함)
 		}
 		else if (buttonState === "endbutton"){
 			//start버튼 비활성화
+			const startButton = document.querySelector('.startButton');
+			startButton.disabled = true; // 버튼 활성화
+			startButton.style.backgroundColor = ''; // 색상을 원하는 값으로 변경
+			// 시작시간 저장, ispressed = true
+			fetch('/pi/start/toggle', {
+				method: 'POST', // 또는 'GET' 등 요청 메서드 지정
+			})
+				.then(response => response.json())
+				.then(data => {
+					// 응답에서 받아온 데이터를 처리 (이 부분은 상황에 따라 다를 수 있습니다.)
+					console.log(data);
+					// 이후 필요한 동작을 수행하세요.
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
 		}
 	});
 	connection.on("DetectState", function (name, state) {
 		if (state === "detected") {
-			if (name == "photolithography") {
+			if (name == "IMAGE_IR_SENSOR_PIN") {
 				//id에 따라 물체감지 상태로 변경
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="photolithography"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'green';
+				}
 			}
-			else if (name == "etching") {
+			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
 				//id에 따라 물체감지 상태로 변경
+				//2차 공정 시작 화면 표시
 			}
-			else if (name == "eds") {
+			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
+				//2차 공정의 1번센서 물체 없음 상태로 변경
 				//id에 따라 물체감지 상태로 변경
 			} 
-			else if (name == "euvLithography") {
+			else if (name == "RELAY_IR_SENSOR_PIN") {
+				//id에 따라 물체감지 상태로 변경
+			} 
+			else if (name == "LIGHT_IR_SENSOR_PIN") {
 				//id에 따라 물체감지 상태로 변경
 			}
 			
 		}
 		else if (state == "noting"){
-			if (name == "photolithography") {
+			if (name == "IMAGE_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
 			}
-			else if (name == "etching") {
+			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
+				// 신호가 안올 예정
+			}
+			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
 				// id에 따라 물체없음 상태로 변경
 			}
-			else if (name == "eds") {
+			else if (name == "RELAY_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
 			}
-			else if (name == "euvLithography") {
+			else if (name == "LIGHT_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
 			}
 		}
@@ -1019,6 +1045,7 @@ else
 		if (state === "working") {
 			if (name == "photolithography") {
 				// id에 따라 공정 작동중으로 변경
+
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 작동중으로 변경
@@ -1078,10 +1105,12 @@ else
 <script>
 	// 버튼 클릭 시 서버로 요청을 보내고 isPressed 값을 변경하는 함수
 	document.querySelector('.startButton').addEventListener('click', function () {
-		// 버튼 비활성화 추가해야됨 (text = 진행중... color = )
-		// 시작시간 저장
-		//
-		// 서버로 요청을 보내고 응답을 받아옵니다.
+
+		const startButton = document.querySelector('.startButton');
+		startButton.style.backgroundColor = 'red'; // 색상 빨강
+		startButton.disabled = true; // 버튼 비활성화
+
+		// 시작시간 저장, ispressed = true
 		fetch('/pi/start/toggle', {
 			method: 'POST', // 또는 'GET' 등 요청 메서드 지정
 		})
@@ -1090,9 +1119,6 @@ else
 				// 응답에서 받아온 데이터를 처리 (이 부분은 상황에 따라 다를 수 있습니다.)
 				console.log(data);
 				// 이후 필요한 동작을 수행하세요.
-				const startButton = document.querySelector('.startButton');
-				startButton.style.backgroundColor = 'red'; // 색상을 원하는 값으로 변경
-
 			})
 			.catch(error => {
 				console.error('Error:', error);

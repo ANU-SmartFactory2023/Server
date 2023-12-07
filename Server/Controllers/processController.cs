@@ -99,7 +99,8 @@ namespace Server.Controllers
 						}
 
 						////화면에 lotid, 씨리얼 초기화 
-                        
+						await _hubContext.Clients.All.SendAsync("SetLotID","end");
+
 					}
 					else
                     {
@@ -132,23 +133,19 @@ namespace Server.Controllers
 		{
 			ResponseModel r = new ResponseModel();
 
-			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
 			string lotid = ""; //임시
 			int serial = 0; //임시
-							// 컬렉션이 비어있지 않은지 확인
-			if (ProcessDB.Total_historyModel.Any())
+			if (ProcessDB.Total_historyModel.Any()) // 컬렉션이 비어있지 않은지 확인
 			{
 				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
 				lotid = lastData.lot_id;
 				serial = lastData.serial;
-
-
 			}
 
-			bool defective = false; //공정 2가 양품이냐 불량이냐 (임시)
-			////DB에서 공정2의 값 가져오기
+			bool defective = false; ////공정 2가 양품이냐 불량이냐 (임시)
+			//DB에서 공정2의 값 가져오기
             var getProcess2Velue = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
-
 			if (getProcess2Velue == null)
 			{
                 //error
@@ -175,7 +172,7 @@ namespace Server.Controllers
 		/*****************************************************DB Update**************************************************************/
 		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
-			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
 			string lotid = ""; //임시
 			int serial = 0; //임시
 			// 컬렉션이 비어있지 않은지 확인

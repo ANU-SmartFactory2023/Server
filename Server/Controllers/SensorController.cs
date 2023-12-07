@@ -36,10 +36,10 @@ namespace Server.Controllers
 
             if (state == "on")
             {
-				////main화면 물체 감지 상태로 변경 (id이용) //함수를 쓰면 어떨까? (detectOn(int id))
-				await _hubContext.Clients.All.SendAsync("DetectState",id, "detected");
+				////main화면 물체 감지 상태로 변경
+				await _hubContext.Clients.All.SendAsync("DetectState", name, "detected"); //name으로 변경 해야함***********
 
-				if (id == 0) //나중에 수정해야함
+				if (name == "INPUT_IR_SENSOR_PIN") //나중에 수정해야함
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
@@ -66,6 +66,8 @@ namespace Server.Controllers
 
 				////화면에 lotid, 씨리얼 초기화 
 				await _hubContext.Clients.All.SendAsync("SetLotID", "end");
+                ////버튼 초기화
+				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
 			}
             else
             {
@@ -119,7 +121,7 @@ namespace Server.Controllers
         {
             DateTime now = DateTime.Now;
 
-			////Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
 			string lotid = ""; //임시
 			int serial = 0; //임시
 			// 컬렉션이 비어있지 않은지 확인
@@ -146,9 +148,8 @@ namespace Server.Controllers
             else
             {
                 updateData.end_time = now; //값 변경 
-                DateTime daltl = new DateTime(2023, 12, 02, 13, 48, 12); ////아직 시작시간 저장하는게 없어서 임시
-                //DateTime starttime = updateData.start_time;
-				long timeSpan = (now - daltl).Ticks;
+                DateTime starttime = (DateTime)updateData.start_time;
+				long timeSpan = (now - starttime).Ticks;
 				int min = (int)(timeSpan / (10000000*60));
                 double etc = timeSpan % (10000000 * 60);
 				int sec = (int)(etc / 10000000);
@@ -163,6 +164,6 @@ namespace Server.Controllers
 
             }
         }
-        
-    }
+
+	}
 }
