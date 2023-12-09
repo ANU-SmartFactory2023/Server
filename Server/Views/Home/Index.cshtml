@@ -721,6 +721,7 @@
 
 	/* 시작 버튼 */
 	.startButton {
+		font-size: 16px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -914,7 +915,7 @@
 <!-- 새 윈도우 페이지 뜨게 하는 코드 -->
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 400, 400)">오늘 총 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
-<button button class="startButton" disabled>S T A R T</button>
+<button button class="startButton" disabled>대 기 ...</button>
 <divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1300, 900)">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton">
 	개별 이력
@@ -1083,6 +1084,7 @@ else
 			const startButton = document.querySelector('.startButton');
 			startButton.disabled = false; // 버튼 활성화
 			startButton.style.backgroundColor = 'green'; // 색상을 원하는 값으로 변경
+			startButton.innerHTML = '시 작'; // 버튼 안의 텍스트 변경
 		}
 		else if (buttonState === "endbutton"){
 			//start버튼 비활성화
@@ -1120,6 +1122,7 @@ else
 				if (firstCircle) {
 					firstCircle.style.backgroundColor = 'green';
 				}
+				document.querySelector(".additionalSubBox2 img").src = "/images/ON.png";
 			}
 			else if (name == "SONIC_IR_SENSOR_NO2") {
 				//2차 공정의 1번센서 물체 없음 상태로 변경
@@ -1127,6 +1130,10 @@ else
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO2"]');
 				if (firstCircle) {
 					firstCircle.style.backgroundColor = 'green';
+				}
+				const secondCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
+				if (secondCircle) {
+					secondCircle.style.backgroundColor = '';
 				}
 			} 
 			else if (name == "RELAY_IR_SENSOR") {
@@ -1155,10 +1162,7 @@ else
 			}
 			else if (name == "SONIC_IR_SENSOR_NO1") {
 				// 신호가 안올 예정
-				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
-				if (firstCircle) {
-					firstCircle.style.backgroundColor = '';
-				}
+
 			}
 			else if (name == "SONIC_IR_SENSOR_NO2") {
 				// id에 따라 물체없음 상태로 변경
@@ -1194,23 +1198,29 @@ else
 			}
 			else if (name == "eds") {
 				// id에 따라 공정 작동중으로 변경
+				document.querySelector(".additionalSubBox3 img").src = "/images/ON.png";
 			}
 			else if (name == "euvLithography") {
 				// id에 따라 공정 작동중으로 변경
+				document.querySelector(".additionalSubBox4 img").src = "/images/ON.png";
 			}
 		}
 		else if (state === "end"){
 			if (name == "photolithography") {
 				// id에 따라 공정 끝 상태로 표시
+				document.querySelector(".additionalSubBox1 img").src = "/images/OFF.png";
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 끝 상태로 표시
+				document.querySelector(".additionalSubBox2 img").src = "/images/OFF.png";
 			}
 			else if (name == "eds") {
 				// id에 따라 공정 끝 상태로 표시
+				document.querySelector(".additionalSubBox3 img").src = "/images/OFF.png";
 			}
 			else if (name == "euvLithography") {
 				// id에 따라 공정 끝 상태로 표시
+				document.querySelector(".additionalSubBox4 img").src = "/images/OFF.png";
 			}
 		}
 	});
