@@ -398,6 +398,16 @@
 		transform: translateY(-15px); /* 화살표를 위로 15픽셀 이동 */
 	}
 
+	/* 이미지 스타일 추가 */
+	.additionalSubBox1 img,
+	.additionalSubBox2 img,
+	.additionalSubBox3 img,
+	.additionalSubBox4 img {
+		width: 90px; /* 이미지의 가로 크기 조절 */
+		height: 70px; /* 이미지의 세로 크기 조절 */
+		object-fit: cover; /* 이미지 비율 유지 */
+	}
+
 	/* 8개의 박스 */
 	.additionalSubBox1 {
 		position: absolute;
@@ -996,37 +1006,41 @@ else
 		<div class="processInfo">공정 진행</div>
 
 		<!-- 첫 번째 원과 화살표 -->
-		<div class="circle" data-process="photolithography" style="margin-left: 110px;"></div>
+		<div class="circle" data-process="IMAGE_IR_SENSOR_PIN" style="margin-left: 110px;"></div>
 		<div class="arrow" style="margin-left: 25px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
 
 		<!-- 두 번째 원과 화살표 -->
-		<div class="circle" style="margin-left: 30px;"></div>
-		<div class="circle" style="margin-left: -30px;"></div>
+		<div class="circle" data-process="SONIC_IR_SENSOR_PIN_NO1" style="margin-left: 30px;"></div>
+		<div class="circle" data-process="SONIC_IR_SENSOR_PIN_NO2" style="margin-left: -30px;"></div>
 		<div class="arrow" style="margin-left: -15px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
 
 		<!-- 세 번째 원과 화살표 -->
-		<div class="circle" style="margin-left: 80px;"></div>
+		<div class="circle" data-process="RELAY_IR_SENSOR_PIN" style="margin-left: 80px;"></div>
 		<div class="arrow" style="margin-left: 20px; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #000;"></div>
 
 		<!-- 네 번째 원 -->
-		<div class="circle" style="margin-left: 80px;"></div>
+		<div class="circle" data-process="LIGHT_IR_SENSOR_PIN" style="margin-left: 80px;"></div>
 	</div>
 
 	<!-- 8 개의 상자 -->
 	<div class="additionalSubBox1">
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
+		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox2">
 		<div class="processInfo">포토, 식각 공정</div>
+		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox3">
 		<div class="processInfo">증착, 금속배선 공정</div>
+		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox4">
 		<div class="processInfo">EDS, 패키징 공정</div>
+		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox5">
@@ -1094,7 +1108,7 @@ else
 		if (state === "detected") {
 			if (name == "IMAGE_IR_SENSOR_PIN") {
 				//id에 따라 물체감지 상태로 변경
-				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="photolithography"]');
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="IMAGE_IR_SENSOR_PIN"]');
 				if (firstCircle) {
 					firstCircle.style.backgroundColor = 'green';
 				}
@@ -1102,39 +1116,70 @@ else
 			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
 				//id에 따라 물체감지 상태로 변경
 				//2차 공정 시작 화면 표시
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'green';
+				}
 			}
 			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
 				//2차 공정의 1번센서 물체 없음 상태로 변경
 				//id에 따라 물체감지 상태로 변경
-			
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO2"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'green';
+				}
 			} 
 			else if (name == "RELAY_IR_SENSOR_PIN") {
 				//id에 따라 물체감지 상태로 변경
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="RELAY_IR_SENSOR_PIN"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'green';
+				}
 			} 
 			else if (name == "LIGHT_IR_SENSOR_PIN") {
 				//id에 따라 물체감지 상태로 변경
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="LIGHT_IR_SENSOR_PIN"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'green';
+				}
 			}
 			
 		}
 		else if (state == "noting"){
 			if (name == "IMAGE_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
-			
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="IMAGE_IR_SENSOR_PIN"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'black';
+				}			
 			}
 			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
 				// 신호가 안올 예정
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'black';
+				}
 			}
 			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
 				// id에 따라 물체없음 상태로 변경
-				
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO2"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'black';
+				}
 			}
 			else if (name == "RELAY_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
-				
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="RELAY_IR_SENSOR_PIN"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'black';
+				}
 			}
 			else if (name == "LIGHT_IR_SENSOR_PIN") {
 				// id에 따라 물체없음 상태로 변경
-			
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="LIGHT_IR_SENSOR_PIN"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = 'black';
+				}
 			}
 		}
 	});
@@ -1142,7 +1187,7 @@ else
 		if (state === "working") {
 			if (name == "photolithography") {
 				// id에 따라 공정 작동중으로 변경
-
+				document.querySelector(".additionalSubBox1 img").src = "~/images/ON.png";
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 작동중으로 변경
