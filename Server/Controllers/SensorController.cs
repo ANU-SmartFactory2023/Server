@@ -41,7 +41,10 @@ namespace Server.Controllers
 
 				if (name == "INPUT_IR_SENSOR") //나중에 수정해야함
                 {
-                    await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
+					//화면 초기화
+					await _hubContext.Clients.All.SendAsync("SetList", "reload");
+
+					await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
 
 					////main화면 start버튼 활성화
 					await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
@@ -61,16 +64,14 @@ namespace Server.Controllers
             {
 				await updateEndtime(); // 전체공정 end time 저장
 
-				////화면에 lotid, 씨리얼 초기화 
-				await _hubContext.Clients.All.SendAsync("SetLotID", "", "");
                 ////버튼 초기화
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
 
 				////전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률) 화면 업데이트
-				await _hubContext.Clients.All.SendAsync("SetList", "reload");
+				await _hubContext.Clients.All.SendAsync("SetList", "total");
 
 			}
-            else
+			else
             {
 				//error
 				r.msg = "sentence errer";

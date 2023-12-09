@@ -63,12 +63,8 @@ namespace Server.Controllers
                     //등급외 DB 저장
                     await updateDB("grade", id, "등외");
 
-					////화면에 lotid, 씨리얼 초기화 
-					await _hubContext.Clients.All.SendAsync("SetLotID", "end");
-
 					////전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률) 화면 업데이트
-					await _hubContext.Clients.All.SendAsync("SetList", "reload");
-
+					await _hubContext.Clients.All.SendAsync("SetList", "total");
 
 					s.msg = "fail";
                     s.statusCode = 200;
@@ -102,9 +98,6 @@ namespace Server.Controllers
 							s.statusCode = 404;
 						}
 
-						////화면에 lotid, 씨리얼 초기화 
-						await _hubContext.Clients.All.SendAsync("SetLotID","end");
-
 					}
 					else
                     {
@@ -118,8 +111,9 @@ namespace Server.Controllers
 					s.msg = "sentence errer";
 					s.statusCode = 404;
 				}
+
 				////(불량여부,소요시간 등 화면에 표시) (할지말지 안정함)
-				////main화면 공정 끝으로 변경
+				////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
 				await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
 			}
             else

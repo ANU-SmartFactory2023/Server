@@ -1201,16 +1201,16 @@ else
 		}
 		else if (state === "end"){
 			if (name == "photolithography") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 			}
 			else if (name == "etching") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 			}
 			else if (name == "eds") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 			}
 			else if (name == "euvLithography") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 			}
 		}
 	});
@@ -1243,13 +1243,17 @@ else
 	});
 	connection.on("SetList", function (state) {
 		if (state === "reload") {
-			// DB에서 전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
+			//화면 초기화
 			location.reload();
 			/*
 			if (newWindow) { //작동안됨
 				newWindow.location.reload();
 			}
 			*/
+		}
+		else if (state === "total") {
+			// DB에서 전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
+
 		}
 
 	});
