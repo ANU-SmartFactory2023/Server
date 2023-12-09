@@ -22,9 +22,13 @@ namespace Server
 		{
 			await Clients.All.SendAsync("setValue", name, setValue);
 		}
-		public async Task SetLotID(string state) //lot id, Serial
+		public async Task SetLotID(string lotid, string serial) //lot id, Serial
 		{
-			await Clients.All.SendAsync("SetLotID", state);
+			await Clients.All.SendAsync("SetLotID", lotid, serial);
+		}
+		public async Task SetList(string state) //전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)
+		{
+			await Clients.All.SendAsync("SetList", state);
 		}
 	}
 }

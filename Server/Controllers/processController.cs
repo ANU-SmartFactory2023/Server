@@ -66,6 +66,10 @@ namespace Server.Controllers
 					////화면에 lotid, 씨리얼 초기화 
 					await _hubContext.Clients.All.SendAsync("SetLotID", "end");
 
+					////전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률) 화면 업데이트
+					await _hubContext.Clients.All.SendAsync("SetList", "reload");
+
+
 					s.msg = "fail";
                     s.statusCode = 200;
                 }

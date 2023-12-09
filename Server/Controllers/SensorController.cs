@@ -39,20 +39,17 @@ namespace Server.Controllers
 				////main화면 물체 감지 상태로 변경
 				await _hubContext.Clients.All.SendAsync("DetectState", name, "detected"); //name으로 변경 해야함***********
 
-				if (name == "INPUT_IR_SENSOR_PIN") //나중에 수정해야함
+				if (name == "INPUT_IR_SENSOR") //나중에 수정해야함
                 {
                     await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
-
-					////main화면 lot id, 씨리얼 번호 띄우기
-					await _hubContext.Clients.All.SendAsync("SetLotID", "start");
-
 
 					////main화면 start버튼 활성화
 					await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton");
 
-                    ////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 or 공정 종료하면
-                 
-                }
+
+					////start 버튼 비활성화를 언제하지?? -> start 버튼 누르면 or 공정 종료하면
+
+				}
 
             }
             else if(state == "off")
@@ -65,9 +62,13 @@ namespace Server.Controllers
 				await updateEndtime(); // 전체공정 end time 저장
 
 				////화면에 lotid, 씨리얼 초기화 
-				await _hubContext.Clients.All.SendAsync("SetLotID", "end");
+				await _hubContext.Clients.All.SendAsync("SetLotID", "", "");
                 ////버튼 초기화
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
+
+				////전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률) 화면 업데이트
+				await _hubContext.Clients.All.SendAsync("SetList", "reload");
+
 			}
             else
             {
@@ -113,7 +114,11 @@ namespace Server.Controllers
 
             ProcessDB.Total_historyModel.Add(model);
             await ProcessDB.SaveChangesAsync();
-        }
+
+
+			////main화면 lot id, 씨리얼 번호 띄우기
+			await _hubContext.Clients.All.SendAsync("SetLotID", lotid, serial);
+		}
 
 
         //공정 종료 시간 업데이트
