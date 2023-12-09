@@ -931,8 +931,8 @@
 @if (Model.Total_historyData.Count > 0)
 {
 	<div class="lotSerialBox">
-		<div class="lotSerialLabel">LOT ID : @Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id</div>
-		<div class="lotSerialLabel">SERIAL : @Model.Total_historyData[Model.Total_historyData.Count - 1].serial</div>
+		<div class="lotSerialLabel" data-process="LodID">LOT ID : @Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id</div>
+		<div class="lotSerialLabel" data-process="Serial">SERIAL : @Model.Total_historyData[Model.Total_historyData.Count - 1].serial</div>
 	</div>
 }
 else
@@ -966,8 +966,8 @@ else
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process1Data.Count</div>
-			<div class="labelBox">불량품 : </div>
-			<div class="labelBox">불량률 :</div>
+			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process1_idx != null && data.process2_idx == null) </div>
+			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process1_idx != null && data.process2_idx == null) * 100.0 / Model.process1Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -976,8 +976,8 @@ else
 		<div class="processInfo">포토, 식각 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process2Data.Count</div>
-			<div class="labelBox">불량품 :</div>
-			<div class="labelBox">불량률 :</div>
+			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process2_idx != null && data.process3_idx == null) </div>
+			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process2_idx != null && data.process3_idx == null) * 100.0 / Model.process2Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -986,8 +986,8 @@ else
 		<div class="processInfo">증착, 금속배선 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process3Data.Count</div>
-			<div class="labelBox">불량품 :</div>
-			<div class="labelBox">불량률 :</div>
+			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process3_idx != null && data.process4_idx == null)</div>
+			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process3_idx != null && data.process4_idx == null) * 100.0 / Model.process3Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -996,8 +996,8 @@ else
 		<div class="processInfo">EDS, 패키징 공정</div>
 		<div class="innerBox">
 			<div class="labelBox">총수량 : @Model.process4Data.Count</div>
-			<div class="labelBox">불량품 :</div>
-			<div class="labelBox">불량률 :</div>
+			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process4_idx != null)</div>
+			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process4_idx != null) * 100.0 / Model.process4Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -1106,14 +1106,14 @@ else
 	});
 	connection.on("DetectState", function (name, state) {
 		if (state === "detected") {
-			if (name == "IMAGE_IR_SENSOR_PIN") {
+			if (name == "IMAGE_IR_SENSOR") {
 				//id에 따라 물체감지 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="IMAGE_IR_SENSOR_PIN"]');
 				if (firstCircle) {
 					firstCircle.style.backgroundColor = 'green';
 				}
 			}
-			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
+			else if (name == "SONIC_IR_SENSOR_NO1") {
 				//id에 따라 물체감지 상태로 변경
 				//2차 공정 시작 화면 표시
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
@@ -1121,7 +1121,7 @@ else
 					firstCircle.style.backgroundColor = 'green';
 				}
 			}
-			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
+			else if (name == "SONIC_IR_SENSOR_NO2") {
 				//2차 공정의 1번센서 물체 없음 상태로 변경
 				//id에 따라 물체감지 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO2"]');
@@ -1129,14 +1129,14 @@ else
 					firstCircle.style.backgroundColor = 'green';
 				}
 			} 
-			else if (name == "RELAY_IR_SENSOR_PIN") {
+			else if (name == "RELAY_IR_SENSOR") {
 				//id에 따라 물체감지 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="RELAY_IR_SENSOR_PIN"]');
 				if (firstCircle) {
 					firstCircle.style.backgroundColor = 'green';
 				}
 			} 
-			else if (name == "LIGHT_IR_SENSOR_PIN") {
+			else if (name == "LIGHT_IR_SENSOR") {
 				//id에 따라 물체감지 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="LIGHT_IR_SENSOR_PIN"]');
 				if (firstCircle) {
@@ -1146,39 +1146,39 @@ else
 			
 		}
 		else if (state == "noting"){
-			if (name == "IMAGE_IR_SENSOR_PIN") {
+			if (name == "IMAGE_IR_SENSOR") {
 				// id에 따라 물체없음 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="IMAGE_IR_SENSOR_PIN"]');
 				if (firstCircle) {
-					firstCircle.style.backgroundColor = 'black';
-				}			
+					firstCircle.style.backgroundColor = '';
+				}
 			}
-			else if (name == "SONIC_IR_SENSOR_PIN_NO1") {
+			else if (name == "SONIC_IR_SENSOR_NO1") {
 				// 신호가 안올 예정
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
 				if (firstCircle) {
-					firstCircle.style.backgroundColor = 'black';
+					firstCircle.style.backgroundColor = '';
 				}
 			}
-			else if (name == "SONIC_IR_SENSOR_PIN_NO2") {
+			else if (name == "SONIC_IR_SENSOR_NO2") {
 				// id에 따라 물체없음 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO2"]');
 				if (firstCircle) {
-					firstCircle.style.backgroundColor = 'black';
+					firstCircle.style.backgroundColor = '';
 				}
 			}
-			else if (name == "RELAY_IR_SENSOR_PIN") {
+			else if (name == "RELAY_IR_SENSOR") {
 				// id에 따라 물체없음 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="RELAY_IR_SENSOR_PIN"]');
 				if (firstCircle) {
-					firstCircle.style.backgroundColor = 'black';
+					firstCircle.style.backgroundColor = '';
 				}
 			}
-			else if (name == "LIGHT_IR_SENSOR_PIN") {
+			else if (name == "LIGHT_IR_SENSOR") {
 				// id에 따라 물체없음 상태로 변경
 				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="LIGHT_IR_SENSOR_PIN"]');
 				if (firstCircle) {
-					firstCircle.style.backgroundColor = 'black';
+					firstCircle.style.backgroundColor = '';
 				}
 			}
 		}
@@ -1187,7 +1187,7 @@ else
 		if (state === "working") {
 			if (name == "photolithography") {
 				// id에 따라 공정 작동중으로 변경
-				document.querySelector(".additionalSubBox1 img").src = "~/images/ON.png";
+				document.querySelector(".additionalSubBox1 img").src ="/images/ON.png";
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 작동중으로 변경
@@ -1231,16 +1231,30 @@ else
 		}
 		
 	});
-	connection.on("SetLotID", function (state) {
-		if (state === "start") {
-			// DB에서 마지막 값을 가져와 lot id, serial 값 띄우기
+	connection.on("SetLotID", function (lotid, serial) {
+		const SetLotID = document.querySelector('.lotSerialBox .lotSerialLabel[data-process="LodID"]');
+		if (SetLotID) {
+			SetLotID.textContent = 'LOT ID : ' + lotid;
 		}
-		else if (state === "end") {
-			// lotid, serial 값 화면에서 지우기
+		const Serial = document.querySelector('.lotSerialBox .lotSerialLabel[data-process="Serial"]');
+		if (Serial) {
+			Serial.textContent = 'SERIAL : ' + serial;
 		}
 	});
+	connection.on("SetList", function (state) {
+		if (state === "reload") {
+			// DB에서 전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
+			location.reload();
+			/*
+			if (newWindow) { //작동안됨
+				newWindow.location.reload();
+			}
+			*/
+		}
 
-			// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+	});
+	// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+
 </script>
 
 
