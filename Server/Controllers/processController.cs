@@ -54,23 +54,29 @@ namespace Server.Controllers
 				////센서값 화면에 표시
 				await _hubContext.Clients.All.SendAsync("setValue", name, "setValue");
 
-				bool defective = false;
+				bool defective = false; //임시
 				////불량 여부 판단
+                //DB에서 id로 불량품값 가져오기
+                //비교하여 defective 판단하기(함수로만들어서 묶는게 나을듯)
 
 
 				if (defective == true) //불량품
                 {
                     //등급외 DB 저장
-                    await updateDB("grade", id, "등외");
+                    await updateDB("grade", id, "D");
 
-					////전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률) 화면 업데이트
-					await _hubContext.Clients.All.SendAsync("SetList", "total");
+					//화면 초기화
+					await _hubContext.Clients.All.SendAsync("SetList", "reload");
+
 
 					s.msg = "fail";
                     s.statusCode = 200;
                 }
                 else if(defective == false){ //양품
-                    if(id == 4) // 마지막 공정일 경우  -> 수정해야함
+					////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
+					await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
+
+					if (name == "euvLithography") // 마지막 공정일 경우
 					{
                         string grade = "A";
 						////등급 판단 //등급 A, B, C, D
@@ -79,25 +85,13 @@ namespace Server.Controllers
 						//등급값 DB저장
 						await updateDB("grade", id, grade);
 
-                        ////왼쪽 오른쪽 판단 //AB 왼쪽 DC 오른쪽?
-                        //결과 
-                        if (grade == "A" || grade == "B")
-                        {
-                            s.msg = "left";
-                            s.statusCode = 200;
-                        }
-                        else if (grade == "C" || grade == "D")
-                        {
-                            s.msg = "right";
-                            s.statusCode = 200;
-                        }
-                        else
-                        {
-							//error
-							s.msg = "sentence errer";
-							s.statusCode = 404;
-						}
+                        ////왼쪽 오른쪽 판단 
+                        ////DB에서 변수 grade에 있는 등급에 해당하는 왼오값을 가져오기
+                        string direction = "left"; ////left or right //현재는 임시, 변경해야함
 
+						//결과 
+						s.msg = direction;
+                        s.statusCode = 200;
 					}
 					else
                     {
@@ -112,9 +106,6 @@ namespace Server.Controllers
 					s.statusCode = 404;
 				}
 
-				////(불량여부,소요시간 등 화면에 표시) (할지말지 안정함)
-				////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
-				await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
 			}
             else
             {
