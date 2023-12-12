@@ -34,17 +34,42 @@
 		var newWindow = window.open('', '_blank', 'width=' + width + ',height=' + height);
 
 		// 새 창에 스타일 및 데이터를 표시합니다.
-		newWindow.document.write('<style>' +
-			'h2 { text-align: center; font-family: "맑은 고딕", Arial, sans-serif; color: #333; }' +
-			'table { width: 100%; border-collapse: collapse; margin-top: 20px; }' +
-			'th, td { padding: 10px; text-align: center; border: 1px solid #ddd; }' +
-			'th { background-color: #f2f2f2; }' +
-			'</style>');
+		newWindow.document.write('<style>');
+		newWindow.document.write('table {');
+		newWindow.document.write('  width: 100%;');
+		newWindow.document.write('  margin: 20px auto;');
+		newWindow.document.write('  border-collapse: collapse;');
+		newWindow.document.write('  border-radius: 10px;');
+		newWindow.document.write('  overflow: hidden;');
+		newWindow.document.write('}');
 
-		// 테두리 추가
-		newWindow.document.write('<style>' +
-			'body { border: 4px solid #ccc; }' +
-			'</style>');
+		newWindow.document.write('th, td {');
+		newWindow.document.write('  padding: 15px;');
+		newWindow.document.write('  font-weight: bold;');
+		newWindow.document.write('  text-align: center;');
+		newWindow.document.write('  border-bottom: 2px solid #ddd;');
+		newWindow.document.write('}');
+
+		newWindow.document.write('th {');
+		newWindow.document.write('  background-color: #4CAF50;');
+		newWindow.document.write('  font-weight: bold;');
+		newWindow.document.write('  font-size: 16px;');
+		newWindow.document.write('  color: white;');
+		newWindow.document.write('}');
+
+		newWindow.document.write('h2 {');
+		newWindow.document.write('  text-align: center;');
+		newWindow.document.write('  font-family: "맑은 고딕", Arial, sans-serif;');
+		newWindow.document.write('  color: #333;');
+		newWindow.document.write('  margin-top: 20px;');
+		newWindow.document.write('  background-color: #4CAF50;');
+		newWindow.document.write('  color: white;');
+		newWindow.document.write('  padding: 10px;');
+		newWindow.document.write('  border-radius: 10px;');
+		newWindow.document.write('  font-size: 20px;');
+		newWindow.document.write('}');
+		newWindow.document.write('</style>');
+
 
 		// 각 버튼에 따라 다른 데이터를 가져와서 출력합니다.
 		if (dataType === 'totalProduction') {
@@ -193,30 +218,60 @@
 	}
 		newWindow.document.write('</table>');
 
+		// 기준값 변경 페이지
 		} else if (dataType === 'change') {
 			newWindow.document.write('<style>');
 			newWindow.document.write('.box-container { display: flex; flex-wrap: wrap; }');
-			newWindow.document.write('.box { width: calc(23% - 20px); border-radius: 5px; margin: 10px; padding: 5px; height: 100px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border: 3px solid #4CAF50; box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3); }');
+			newWindow.document.write('.box { width: calc(23% - 20px); border-radius: 5px; margin: 10px; padding: 5px; height: 70px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 3px solid #4CAF50; box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.3); }');
 			newWindow.document.write('.box label { text-align: center; font-weight: bold; margin-bottom: 5px; }');
-			newWindow.document.write('.box input { width: calc(100% - 10px); height: 30px; margin-bottom: 25px; box-sizing: border-box; }');
+			newWindow.document.write('.button-container { display: flex; justify-content: space-between; margin-top: 5px; }');
+			newWindow.document.write('.button { width: 70px; height: 30px; box-sizing: border-box; padding: 5px; margin-right: 10px; margin-left: 10px; border: 1px solid #4CAF50; border-radius: 5px; background-color: #4CAF50; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }');
+			newWindow.document.write('.box input { width: calc(100% - 10px); height: 30px; margin-bottom: 10px; box-sizing: border-box; }');
 			newWindow.document.write('</style>');
 
-			function createBoxContainer() {
+			function createBoxContainer(sensorCount, isFinal, isDirection) {
 				newWindow.document.write('<div class="box-container">');
-				for (var i = 1; i <= 4; i++) {
+				for (var i = 1; i <= sensorCount; i++) {
+					var label;
+					if (isFinal) {
+						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 기준';
+					} else if (isDirection) {
+						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 방향';
+					} else {
+						label = 'Sensor' + ((i <= 4) ? i : i - 4);
+					}
+
 					newWindow.document.write('<div class="box">');
-					newWindow.document.write('<label>Sensor' + i + '</label>');
-					newWindow.document.write('<input type="number" placeholder="숫자를 입력하세요">');
+					newWindow.document.write('<label>' + label + '</label>');
+					if (!isDirection) {
+						// 최종 방향이 아니면 input box 추가
+						newWindow.document.write('<input type="number" step="0.01" placeholder="값을 입력하세요.">');
+					} else {
+						// 최종 방향이면 버튼 추가
+						newWindow.document.write('<div class="button-container">');
+						newWindow.document.write('<div class="button" onclick="prevDirection()">왼쪽</div>');
+						newWindow.document.write('<div class="button" onclick="nextDirection()">오른쪽</div>');
+						newWindow.document.write('</div>');
+					}
 					newWindow.document.write('</div>');
 				}
 				newWindow.document.write('</div>');
 			}
 
-			newWindow.document.write('<h2>불량 기준값</h2>');
-			createBoxContainer();
+			newWindow.document.write('<h2>A, B, C 등급 기준값</h2>');
+			createBoxContainer(8);
 
-			newWindow.document.write('<h2 style="margin-top: 20px;">등급 기준값</h2>');
-			createBoxContainer();
+			newWindow.document.write('<h2 style="margin-top: 20px;">불량(D 등급) 기준값</h2>');
+			createBoxContainer(4);
+
+			// 최종 기준값 추가
+			newWindow.document.write('<h2 style="margin-top: 20px;">최종 기준값</h2>');
+			createBoxContainer(3, true); // 3개의 박스 추가, isFinal 인자에 true 전달
+
+			// 최종 방향 소제목 추가
+			newWindow.document.write('<h2 style="margin-top: 20px;">최종 방향</h2>');
+			// 최종 방향 박스 추가
+			createBoxContainer(3, false, true); // 3개의 박스 추가, isDirection 인자에 true 전달
 
 			newWindow.document.write('</div>');
 
@@ -224,14 +279,21 @@
 			newWindow.document.write('<style>');
 			newWindow.document.write('.custom-button {');
 			newWindow.document.write('  position: fixed;');
-			newWindow.document.write('  right: 35px;');
-			newWindow.document.write('  bottom: 35px;');
+			newWindow.document.write('  right: 50px;');
+			newWindow.document.write('  bottom: 55px;');
 			newWindow.document.write('  background-color: #4CAF50;');
 			newWindow.document.write('  color: #fff;');
 			newWindow.document.write('  padding: 10px;');
 			newWindow.document.write('  border-radius: 10px;');
 			newWindow.document.write('  cursor: pointer;');
 			newWindow.document.write('  transition: background-color 0.3s;');
+			newWindow.document.write('  width: 100px;'); // 조절 가능
+			newWindow.document.write('  height: 40px;'); // 조절 가능
+			newWindow.document.write('  display: flex;'); // 중앙 정렬을 위한 Flexbox 사용
+			newWindow.document.write('  justify-content: center;'); // 가로 방향 중앙 정렬
+			newWindow.document.write('  align-items: center;'); // 세로 방향 중앙 정렬
+			newWindow.document.write('  font-size: 20px;'); // 조절 가능
+			newWindow.document.write('  font-weight: bold;'); // 조절 가능
 			newWindow.document.write('}');
 			newWindow.document.write('.custom-button:hover {');
 			newWindow.document.write('  background-color: #45a049;');
@@ -342,6 +404,7 @@
 		border-radius: 10px; /* 테두리 둥글게 조절 */
 	}
 	.processInfo {
+		font-size: 18px;
 		font-weight: bold;
 		margin-bottom: 20px;
 	}
@@ -354,6 +417,7 @@
 	}
 
 	.labelBox {
+		font-weight: bold;
 		border: 1px solid #000;
 		display: block;
 		margin: 10px; /* 간격 조절 */
@@ -476,7 +540,7 @@
 	.additionalSubBox5 {
 		position: absolute;
 		top: 640px;
-		left: 280px;
+		left: 0px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -492,7 +556,7 @@
 	.additionalSubBox6 {
 		position: absolute;
 		top: 640px;
-		left: 560px;
+		left: 280px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -508,7 +572,7 @@
 	.additionalSubBox7 {
 		position: absolute;
 		top: 640px;
-		left: 840px;
+		left: 560px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -524,7 +588,7 @@
 	.additionalSubBox8 {
 		position: absolute;
 		top: 640px;
-		left: 0px;
+		left: 840px;
 		border: 1px solid #000;
 		margin: 10px;
 		padding: 10px;
@@ -561,6 +625,7 @@
 
 	/* 오늘 총 생산량 버튼 */
 	.totalProductionButton {
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -601,6 +666,7 @@
 
 	/* 전체 불량률 버튼 */
 	.totalDefectRateButton {
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -721,7 +787,7 @@
 
 	/* 시작 버튼 */
 	.startButton {
-		font-size: 16px;
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -757,6 +823,7 @@
 
 	/* 전체 이력 버튼 */
 	.fullHistoryButton {
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -792,6 +859,7 @@
 
 	/* 개별 이력 버튼 */
 	.individualHistoryButton {
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -860,6 +928,7 @@
 
 	/* 기준 값 변경하기 버튼 */
 	.changeButton {
+		font-size: 19px;
 		font-weight: bold;
 		/* position 속성을 사용하여 요소의 위치를 설정합니다. */
 		position: absolute;
@@ -916,7 +985,7 @@
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 400, 400)">오늘 총 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
 <button button class="startButton" disabled>대 기 ...</button>
-<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1300, 900)">전체 이력</divbutton>
+<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1500, 900)">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton">
 	개별 이력
 	<div class="dropdown-content">
@@ -926,7 +995,7 @@
 		<div>패키지 공정</div>
 	</div>
 </divbutton>
-<divbutton button class="changeButton" onclick="openNewWindow('change', 950, 500)">기준 값 변경</divbutton>
+<divbutton button class="changeButton" onclick="openNewWindow('change', 900, 900)">기준 값 변경</divbutton>
 
 <!-- 랏시리얼 박스의 DB값이 없을 경우 공백으로 처리하는 예외처리 코드 -->
 @if (Model.Total_historyData.Count > 0)
@@ -1053,7 +1122,7 @@ else
 	</div>
 
 	<div class="additionalSubBox7">
-		<div class="processInfo">밝기</div>
+		<div class="processInfo">전도체 검사</div>
 	</div>
 
 	<div class="additionalSubBox8">
@@ -1091,6 +1160,7 @@ else
 			const startButton = document.querySelector('.startButton');
 			startButton.disabled = true; // 버튼 활성화
 			startButton.style.backgroundColor = ''; // 색상을 원하는 값으로 변경
+			startButton.innerHTML = '대 기 ...'; // 버튼 안의 텍스트 변경
 			// 시작시간 저장, ispressed = true
 			fetch('/pi/start/toggle', {
 				method: 'POST', // 또는 'GET' 등 요청 메서드 지정
