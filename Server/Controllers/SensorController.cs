@@ -66,7 +66,7 @@ namespace Server.Controllers
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
 
 				//화면 초기화
-				await _hubContext.Clients.All.SendAsync("SetList", "reload");
+				//await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
 			}
 			else
@@ -128,17 +128,23 @@ namespace Server.Controllers
 			//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
 			string lotid = ""; //임시
 			int serial = 0; //임시
+            string grade = ""; //임시
+
 			// 컬렉션이 비어있지 않은지 확인
 			if (ProcessDB.Total_historyModel.Any())
 			{
 				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
 				lotid = lastData.lot_id;
                 serial = lastData.serial;
+				grade = lastData.grade;
 			}
             else
             {
                 return;
             }
+
+			//등급 화면 업데이트
+			await _hubContext.Clients.All.SendAsync("SetGradeCount", grade);
 
 			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)

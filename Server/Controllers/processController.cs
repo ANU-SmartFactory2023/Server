@@ -66,7 +66,7 @@ namespace Server.Controllers
                     await updateDB("grade", id, "D");
 
 					//화면 초기화
-					await _hubContext.Clients.All.SendAsync("SetList", "reload");
+					//await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
 
 					s.msg = "fail";

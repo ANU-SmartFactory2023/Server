@@ -1382,15 +1382,56 @@ else
 			location.reload();
 		}
 		else if (state === "total") {
-			// DB에서 전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
+			// DB에서 전체이력, 개별이력, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
 			if (newWindow) { //작동안됨
 				newWindow.location.reload();
 			}
-			//등급
 		}
 
 	});
-	// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+	connection.on("SetGradeCount", function (grade) {
+		if (grade === "A") {
+			const grade = document.querySelector('.GradeBox1 .GradeLabel1');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "A 등급 : " + count.toString();
+		}
+		else if (grade === "B"){
+			const grade = document.querySelector('.GradeBox2 .GradeLabel2');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "B 등급 : " + count.toString();
+		}
+		else if (grade === "C"){
+			const grade = document.querySelector('.GradeBox3 .GradeLabel3');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "C 등급 : " + count.toString();
+		}
+		else if (grade === "D") {
+			const grade = document.querySelector('.GradeBox4 .GradeLabel4');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "D 등급 : " + count.toString();
+		}
+
+	});
 
 </script>
 
