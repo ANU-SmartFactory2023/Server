@@ -33,7 +33,7 @@ namespace Server.Controllers
             else
             {
 				////main화면 start버튼 활성화
-				await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton"); //테스트용
+				//await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton"); //테스트용
 				r.msg = "wait";
 				r.statusCode = 500;
             }
