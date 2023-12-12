@@ -1035,9 +1035,9 @@ else
 	<div class="subBox1">
 		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 : @Model.process1Data.Count</div>
-			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process1_idx != null && data.process2_idx == null) </div>
-			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process1_idx != null && data.process2_idx == null) * 100.0 / Model.process1Data.Count).ToString("F2"))%</div>
+			<div class="labelBox" data-process="total">총수량 : @Model.process1Data.Count</div>
+			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process1_idx != null && data.process2_idx == null) </div>
+			<div class="labelBox" data-process="percent">불량률 : @((Model.Total_historyData.Count(data => data.grade == "D" && data.process1_idx != null && data.process2_idx == null) * 100.0 / Model.process1Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -1045,9 +1045,9 @@ else
 	<div class="subBox2">
 		<div class="processInfo">포토, 식각 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 : @Model.process2Data.Count</div>
-			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process2_idx != null && data.process3_idx == null) </div>
-			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process2_idx != null && data.process3_idx == null) * 100.0 / Model.process2Data.Count).ToString("F2"))%</div>
+			<div class="labelBox" data-process="total">총수량 : @Model.process2Data.Count</div>
+			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process2_idx != null && data.process3_idx == null) </div>
+			<div class="labelBox" data-process="percent">불량률 : @((Model.Total_historyData.Count(data => data.grade == "D" && data.process2_idx != null && data.process3_idx == null) * 100.0 / Model.process2Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -1055,9 +1055,9 @@ else
 	<div class="subBox3">
 		<div class="processInfo">증착, 금속배선 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 : @Model.process3Data.Count</div>
-			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process3_idx != null && data.process4_idx == null)</div>
-			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process3_idx != null && data.process4_idx == null) * 100.0 / Model.process3Data.Count).ToString("F2"))%</div>
+			<div class="labelBox" data-process="total">총수량 : @Model.process3Data.Count</div>
+			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process3_idx != null && data.process4_idx == null)</div>
+			<div class="labelBox" data-process="percent">불량률 : @((Model.Total_historyData.Count(data => data.grade == "D" && data.process3_idx != null && data.process4_idx == null) * 100.0 / Model.process3Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -1065,9 +1065,9 @@ else
 	<div class="subBox4">
 		<div class="processInfo">EDS, 패키징 공정</div>
 		<div class="innerBox">
-			<div class="labelBox">총수량 : @Model.process4Data.Count</div>
-			<div class="labelBox">불량품 : @Model.Total_historyData.Count(data => data.grade == null && data.process4_idx != null)</div>
-			<div class="labelBox">불량률 : @((Model.Total_historyData.Count(data => data.grade == null && data.process4_idx != null) * 100.0 / Model.process4Data.Count).ToString("F2"))%</div>
+			<div class="labelBox" data-process="total">총수량 : @Model.process4Data.Count</div>
+			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process4_idx != null)</div>
+			<div class="labelBox" data-process="percent">불량률 : @((Model.Total_historyData.Count(data => data.grade == "D" && data.process4_idx != null) * 100.0 / Model.process4Data.Count).ToString("F2"))%</div>
 		</div>
 	</div>
 
@@ -1154,6 +1154,8 @@ else
 			startButton.disabled = false; // 버튼 활성화
 			startButton.style.backgroundColor = 'green'; // 색상을 원하는 값으로 변경
 			startButton.innerHTML = '시 작'; // 버튼 안의 텍스트 변경
+
+			////센서값들 빈값으로 변경
 		}
 		else if (buttonState === "endbutton"){
 			//start버튼 비활성화
@@ -1257,7 +1259,7 @@ else
 			}
 		}
 	});
-	connection.on("WorkingState", function (name, state) {
+	connection.on("WorkingState", function (name, state, fail) {
 		if (state === "working") {
 			if (name == "photolithography") {
 				// id에 따라 공정 작동중으로 변경
@@ -1277,20 +1279,142 @@ else
 		}
 		else if (state === "end"){
 			if (name == "photolithography") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시, 수량, 불량률 화면 수정
 				document.querySelector(".additionalSubBox1 img").src = "/images/OFF.png";
+
+				const total = document.querySelector('.wrapperBox .subBox1 .innerBox [data-process="total"]');
+				const defect = document.querySelector('.wrapperBox .subBox1 .innerBox [data-process="defect"]');
+				const defp = document.querySelector('.wrapperBox .subBox1 .innerBox [data-process="percent"]');
+
+				let totalnumber = 0;
+				let defnum = 0;
+				let defpnum = 0;
+				const regex = /[^0-9]/g;
+
+				if (total) {
+					const str = total.textContent;
+					const result = str.replace(regex, "");
+					totalnumber = parseInt(result);
+					totalnumber = totalnumber + 1;
+					total.textContent = "총수량 : " + totalnumber.toString();
+				}
+				if (defect) {
+					const str = defect.textContent;
+					const result = str.replace(regex, "");
+					defnum = parseInt(result);
+					if (fail === "fail") {
+						// 불량 업데이트
+						defnum = defnum + 1;
+						defect.textContent = "불량품 : " + defnum.toString();
+					}
+				}
+				if (defp) {
+					defpnum = (defnum / totalnumber) * 100;
+					defp.textContent = "불량률 : " + defpnum.toFixed(2).toString() + "%";
+				}
 			}
 			else if (name == "etching") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 				document.querySelector(".additionalSubBox2 img").src = "/images/OFF.png";
+
+				const total = document.querySelector('.wrapperBox .subBox2 .innerBox [data-process="total"]');
+				const defect = document.querySelector('.wrapperBox .subBox2 .innerBox [data-process="defect"]');
+				const defp = document.querySelector('.wrapperBox .subBox2 .innerBox [data-process="percent"]');
+
+				let totalnumber = 0;
+				let defnum = 0;
+				let defpnum = 0;
+				const regex = /[^0-9]/g;
+
+				if (total) {
+					const str = total.textContent;
+					const result = str.replace(regex, "");
+					totalnumber = parseInt(result);
+					totalnumber = totalnumber + 1;
+					total.textContent = "총수량 : " + totalnumber.toString();
+				}
+				if (defect) {
+					const str = defect.textContent;
+					const result = str.replace(regex, "");
+					defnum = parseInt(result);
+					if (fail === "fail") {
+						// 불량 업데이트
+						defnum = defnum + 1;
+						defect.textContent = "불량품 : " + defnum.toString();
+					}
+				}
+				if (defp) {
+					defpnum = (defnum / totalnumber) * 100;
+					defp.textContent = "불량률 : " + defpnum.toFixed(2).toString() + "%";
+				}
+
 			}
 			else if (name == "eds") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 				document.querySelector(".additionalSubBox3 img").src = "/images/OFF.png";
+
+				const total = document.querySelector('.wrapperBox .subBox3 .innerBox [data-process="total"]');
+				const defect = document.querySelector('.wrapperBox .subBox3 .innerBox [data-process="defect"]');
+				const defp = document.querySelector('.wrapperBox .subBox3 .innerBox [data-process="percent"]');
+
+				let totalnumber = 0;
+				let defnum = 0;
+				let defpnum = 0;
+				const regex = /[^0-9]/g;
+
+				if (total) {
+					const str = total.textContent;
+					const result = str.replace(regex, "");
+					totalnumber = parseInt(result);
+					totalnumber = totalnumber + 1;
+					total.textContent = "총수량 : " + totalnumber.toString();
+				}
+				if (defect) {
+					const str = defect.textContent;
+					const result = str.replace(regex, "");
+					defnum = parseInt(result);
+					if (fail === "fail") {
+						// 불량 업데이트
+						defnum = defnum + 1;
+						defect.textContent = "불량품 : " + defnum.toString();
+					}
+				}
+				if (defp) {
+					defpnum = (defnum / totalnumber) * 100;
+					defp.textContent = "불량률 : " + defpnum.toFixed(2).toString() + "%";
+				}
+
 			}
 			else if (name == "euvLithography") {
-				// id에 따라 공정 끝 상태로 표시
+				// id에 따라 공정 끝 상태로 표시 ,수량, 불량률 화면 수정
 				document.querySelector(".additionalSubBox4 img").src = "/images/OFF.png";
+
+				const total = document.querySelector('.wrapperBox .subBox4 .innerBox [data-process="total"]');
+				const defect = document.querySelector('.wrapperBox .subBox4 .innerBox [data-process="defect"]');
+				const defp = document.querySelector('.wrapperBox .subBox4 .innerBox [data-process="percent"]');
+
+				let totalnumber = 0;
+				let defnum = 0;
+				let defpnum = 0;
+				const regex = /[^0-9]/g;
+
+				if (total) {
+					const str = total.textContent;
+					const result = str.replace(regex, "");
+					totalnumber = parseInt(result);
+					totalnumber = totalnumber + 1;
+					total.textContent = "총수량 : " + totalnumber.toString();
+				}
+				if (defect) {
+					const str = defect.textContent;
+					const result = str.replace(regex, "");
+					defnum = parseInt(result);
+				}
+				if (defp) {
+					defpnum = (defnum / totalnumber) * 100;
+					defp.textContent = "불량률 : " + defpnum.toFixed(2).toString() + "%";
+				}
+
 			}
 		}
 	});
@@ -1323,17 +1447,60 @@ else
 	});
 	connection.on("SetList", function (state) {
 		if (state === "reload") {
-			// DB에서 전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
+			//화면 초기화
 			location.reload();
-			/*
+		}
+		else if (state === "total") {
+			// DB에서 전체이력, 개별이력, (오늘 총 생산량, 전체 불량률)을 불러와 업데이트
 			if (newWindow) { //작동안됨
 				newWindow.location.reload();
 			}
-			*/
 		}
 
 	});
-	// 다른 코드 및 이벤트 핸들러들을 추가할 수 있습니다.
+	connection.on("SetGradeCount", function (grade) {
+		if (grade === "A") {
+			const grade = document.querySelector('.GradeBox1 .GradeLabel1');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "A 등급 : " + count.toString();
+		}
+		else if (grade === "B"){
+			const grade = document.querySelector('.GradeBox2 .GradeLabel2');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "B 등급 : " + count.toString();
+		}
+		else if (grade === "C"){
+			const grade = document.querySelector('.GradeBox3 .GradeLabel3');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "C 등급 : " + count.toString();
+		}
+		else if (grade === "D") {
+			const grade = document.querySelector('.GradeBox4 .GradeLabel4');
+			const regex = /[^0-9]/g;
+			const str = grade.textContent;
+			const result = str.replace(regex, "");
+
+			let count = parseInt(result);
+			count = count + 1;
+			grade.textContent = "D 등급 : " + count.toString();
+		}
+
+	});
 
 </script>
 
