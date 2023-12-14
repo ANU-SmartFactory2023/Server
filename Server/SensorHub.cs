@@ -26,10 +26,7 @@ namespace Server
 		{
 			await Clients.All.SendAsync("SetLotID", lotid, serial);
 		}
-		public async Task SetGradeCount(string grade) //전체이력, 개별이력,(오늘 총 생산량, 전체 불량률)
-		{
-			await Clients.All.SendAsync("SetGradeCount", grade);
-		}
+
 		public async Task SetList(string state) //전체이력, 개별이력, 등급, (오늘 총 생산량, 전체 불량률)
 		{
 			await Clients.All.SendAsync("SetList", state);

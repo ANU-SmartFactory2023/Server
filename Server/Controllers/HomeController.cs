@@ -23,6 +23,7 @@ namespace Server.Controllers
             var p2 = ProcessDB.Process2Model.ToList();
             var p3 = ProcessDB.Process3Model.ToList();
             var p4 = ProcessDB.Process4Model.ToList();
+            var rp = ProcessDB.ReferenceModel.ToList();
 
             // 데이터를 뷰 모델에 저장
             var viewModel = new MainModel
@@ -32,7 +33,8 @@ namespace Server.Controllers
                 process2Data = p2,
                 process3Data = p3,
                 process4Data = p4,
-            };
+				referenceData = rp
+			};
             
             return View(viewModel);
         }
