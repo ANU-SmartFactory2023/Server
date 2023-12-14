@@ -87,25 +87,24 @@
 			.Where(historyItem => historyItem.end_time != null)
 			.GroupBy(historyItem => historyItem.end_time?.ToString("yyyy-MM-dd"));
 
-			productionDates = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().ToList();
+			productionDates = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().OrderBy(d => DateTime.Parse(d)).ToList();
 			productionCounts = productionDates.Select(date => groupedData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
 		}
 	}
-
 				newWindow.document.write('<canvas id="productionChart" width="400" height="200"></canvas>');
 
 			var ctx = newWindow.document.getElementById('productionChart').getContext('2d');
 			var productionChart = new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: [@foreach (var date in productionDates.OrderBy(d => DateTime.Parse(d)))
-	{
-		<text>'@date', </text>
-	}],
+					labels: [@foreach (var date in productionDates)
+					{
+						<text>'@date', </text>
+					}],
 
 					datasets: [{
 						label: '생산량',
-						data: [@Html.Raw(Json.Serialize(productionCounts))],
+						data: @Json.Serialize(productionCounts),
 						backgroundColor: 'rgba(75, 192, 192, 0.2)',
 						borderColor: 'rgba(75, 192, 192, 1)',
 						borderWidth: 1
@@ -122,6 +121,46 @@
 		} else if (dataType === 'totalDefectRate') {
 			newWindow.document.write('<h2>날짜별 불량 갯수 그래프</h2>');
 			// 여기에 해당 데이터를 가져와서 출력하는 코드를 추가하세요.
+	@{
+		List<int> productionCounts_d = new List<int>();
+		List<string> productionDates_d = new List<string>();
+
+		if (Model.Total_historyData.Any())
+		{
+			var groupedData = Model.Total_historyData
+			.Where(historyItem => historyItem.start_time != null && historyItem.grade == "D")
+			.GroupBy(historyItem => historyItem.start_time?.ToString("yyyy-MM-dd"));
+			productionDates_d = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().OrderBy(d => DateTime.Parse(d)).ToList();
+			productionCounts_d = productionDates_d.Select(date => groupedData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
+		}
+	}
+				newWindow.document.write('<canvas id="productionChart" width="400" height="200"></canvas>');
+
+			var ctx = newWindow.document.getElementById('productionChart').getContext('2d');
+			var productionChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: [@foreach (var date in productionDates_d)
+	{
+		<text>'@date', </text>
+	}],
+
+					datasets: [{
+						label: '생산량',
+						data: @Json.Serialize(productionCounts_d),
+						backgroundColor: 'rgba(75, 192, 192, 0.2)',
+						borderColor: 'rgba(75, 192, 192, 1)',
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
 		} else if (dataType === 'fullHistory') {
 			newWindow.document.write('<h2>전체 이력 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
