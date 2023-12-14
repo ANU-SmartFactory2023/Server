@@ -98,9 +98,9 @@
 				type: 'line',
 				data: {
 					labels: [@foreach (var date in productionDates)
-	{
-		<text>'@date', </text>
-	}],
+					{
+						<text>'@date', </text>
+					}],
 
 					datasets: [{
 						label: '생산량',
@@ -128,8 +128,8 @@
 		if (Model.Total_historyData.Any())
 		{
 			var gradeDData = Model.Total_historyData
-			.Where(historyItem => historyItem.end_time != null && historyItem.grade == "D")
-			.GroupBy(historyItem => historyItem.end_time?.ToString("yyyy-MM-dd"));
+			.Where(historyItem => historyItem.start_time != null && historyItem.grade == "D")
+			.GroupBy(historyItem => historyItem.start_time?.ToString("yyyy-MM-dd"));
 
 			gradeDDates = gradeDData.Select(group => group.Key).Where(date => date != null).Cast<string>().OrderBy(d => DateTime.Parse(d)).ToList();
 			gradeDCounts = gradeDDates.Select(date => gradeDData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
