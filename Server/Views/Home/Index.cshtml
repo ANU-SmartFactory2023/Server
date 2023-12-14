@@ -87,25 +87,24 @@
 			.Where(historyItem => historyItem.end_time != null)
 			.GroupBy(historyItem => historyItem.end_time?.ToString("yyyy-MM-dd"));
 
-			productionDates = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().ToList();
+			productionDates = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().OrderBy(d => DateTime.Parse(d)).ToList();
 			productionCounts = productionDates.Select(date => groupedData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
 		}
 	}
-
 				newWindow.document.write('<canvas id="productionChart" width="400" height="200"></canvas>');
 
 			var ctx = newWindow.document.getElementById('productionChart').getContext('2d');
 			var productionChart = new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: [@foreach (var date in productionDates.OrderBy(d => DateTime.Parse(d)))
+					labels: [@foreach (var date in productionDates)
 	{
 		<text>'@date', </text>
 	}],
 
 					datasets: [{
 						label: '생산량',
-						data: [@Html.Raw(Json.Serialize(productionCounts))],
+						data: @Json.Serialize(productionCounts),
 						backgroundColor: 'rgba(75, 192, 192, 0.2)',
 						borderColor: 'rgba(75, 192, 192, 1)',
 						borderWidth: 1
@@ -122,6 +121,47 @@
 		} else if (dataType === 'totalDefectRate') {
 			newWindow.document.write('<h2>날짜별 불량 갯수 그래프</h2>');
 			// 여기에 해당 데이터를 가져와서 출력하는 코드를 추가하세요.
+	@{
+		List<int> gradeDCounts = new List<int>();
+		List<string> gradeDDates = new List<string>();
+
+		if (Model.Total_historyData.Any())
+		{
+			var gradeDData = Model.Total_historyData
+			.Where(historyItem => historyItem.end_time != null && historyItem.grade == "D")
+			.GroupBy(historyItem => historyItem.end_time?.ToString("yyyy-MM-dd"));
+
+			gradeDDates = gradeDData.Select(group => group.Key).Where(date => date != null).Cast<string>().OrderBy(d => DateTime.Parse(d)).ToList();
+			gradeDCounts = gradeDDates.Select(date => gradeDData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
+		}
+	}
+				newWindow.document.write('<canvas id="gradeDChart" width="400" height="200"></canvas>');
+
+			var ctxGradeD = newWindow.document.getElementById('gradeDChart').getContext('2d');
+			var gradeDChart = new Chart(ctxGradeD, {
+				type: 'line',
+				data: {
+					labels: [@foreach (var date in gradeDDates)
+	{
+		<text>'@date', </text>
+	}],
+
+					datasets: [{
+						label: '불량품 갯수',
+						data: @Json.Serialize(gradeDCounts),
+						backgroundColor: 'rgba(255, 99, 132, 0.2)', // Adjust color as needed
+						borderColor: 'rgba(255, 99, 132, 1)',
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
 		} else if (dataType === 'fullHistory') {
 			newWindow.document.write('<h2>전체 이력 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
@@ -1254,9 +1294,9 @@
 </style>
 <!-- 새 윈도우 페이지 뜨게 하는 코드 -->
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 1000, 600)">전체 생산량</divbutton>
-<divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
+<divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 1000, 600)">전체 불량 갯수</divbutton>
 <button button class="startButton" disabled>대 기 ...</button>
-<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1500, 900)">전체 이력</divbutton>
+<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1600, 900)">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton">
 	개별 이력
 	<div class="dropdown-content">
