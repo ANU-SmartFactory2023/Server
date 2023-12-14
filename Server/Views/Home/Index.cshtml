@@ -7,7 +7,9 @@
 	<h1>반도체 공정 시스템</h1>
 </header>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 <script>
 	// 개별 이력 버튼 마우스 호버 효과 적용 코드
 	$(document).ready(function () {
@@ -73,10 +75,52 @@
 
 		// 각 버튼에 따라 다른 데이터를 가져와서 출력합니다.
 		if (dataType === 'totalProduction') {
-			newWindow.document.write('<h2>오늘 총 생산량 데이터</h2>');
-			// 여기에 해당 데이터를 가져와서 출력하는 코드를 추가하세요.
+			newWindow.document.write('<h2>날짜별 생산량 그래프</h2>');
+			// totalProduction 데이터를 가져와야 하는 부분
+	@{
+		List<int> productionCounts = new List<int>();
+		List<string> productionDates = new List<string>();
+
+		if (Model.Total_historyData.Any())
+		{
+			var groupedData = Model.Total_historyData
+			.Where(historyItem => historyItem.end_time != null)
+			.GroupBy(historyItem => historyItem.end_time?.ToString("yyyy-MM-dd"));
+
+			productionDates = groupedData.Select(group => group.Key).Where(date => date != null).Cast<string>().ToList();
+			productionCounts = productionDates.Select(date => groupedData.FirstOrDefault(group => group.Key == date)?.Count() ?? 0).ToList();
+		}
+	}
+
+				newWindow.document.write('<canvas id="productionChart" width="400" height="200"></canvas>');
+
+			var ctx = newWindow.document.getElementById('productionChart').getContext('2d');
+			var productionChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: [@foreach (var date in productionDates.OrderBy(d => DateTime.Parse(d)))
+	{
+		<text>'@date', </text>
+	}],
+
+					datasets: [{
+						label: '생산량',
+						data: [@Html.Raw(Json.Serialize(productionCounts))],
+						backgroundColor: 'rgba(75, 192, 192, 0.2)',
+						borderColor: 'rgba(75, 192, 192, 1)',
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						y: {
+							beginAtZero: true
+						}
+					}
+				}
+			});
 		} else if (dataType === 'totalDefectRate') {
-			newWindow.document.write('<h2>전체 불량률 데이터</h2>');
+			newWindow.document.write('<h2>날짜별 불량 갯수 그래프</h2>');
 			// 여기에 해당 데이터를 가져와서 출력하는 코드를 추가하세요.
 		} else if (dataType === 'fullHistory') {
 			newWindow.document.write('<h2>전체 이력 데이터</h2>');
@@ -94,9 +138,10 @@
 			newWindow.document.write('<th>프로세스4</th>');
 			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
-
-	@foreach (var historyItem in Model.Total_historyData)
+	// 데이터를 역순으로 반복하여 출력
+	@for (var i = Model.Total_historyData.Count - 1; i >= 0; i--)
 	{
+		var historyItem = Model.Total_historyData[i];
 		@:newWindow.document.write('<tr>');
 		@:newWindow.document.write('<td>' + '@historyItem.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@historyItem.serial' + '</td>');
@@ -127,8 +172,10 @@
 			newWindow.document.write('<th>센서값</th>');
 			newWindow.document.write('</tr>');
 
-	@foreach (var process1Item in Model.process1Data)
+	// 데이터를 역순으로 반복하여 출력
+	@for (var i = Model.process1Data.Count - 1; i >= 0; i--)
 	{
+		var process1Item = Model.process1Data[i];
 		@:newWindow.document.write('<tr>');
 		@:newWindow.document.write('<td>' + '@process1Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.serial' + '</td>');
@@ -153,8 +200,10 @@
 			newWindow.document.write('<th>센서값</th>');
 			newWindow.document.write('</tr>');
 
-	@foreach (var process2Item in Model.process2Data)
+			// 데이터를 역순으로 반복하여 출력
+	@for (var i = Model.process2Data.Count - 1; i >= 0; i--)
 	{
+		var process2Item = Model.process2Data[i];
 		@:newWindow.document.write('<tr>');
 		@:newWindow.document.write('<td>' + '@process2Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.serial' + '</td>');
@@ -179,8 +228,10 @@
 			newWindow.document.write('<th>센서값</th>');
 			newWindow.document.write('</tr>');
 
-	@foreach (var process3Item in Model.process3Data)
+			// 데이터를 역순으로 반복하여 출력
+	@for (var i = Model.process3Data.Count - 1; i >= 0; i--)
 	{
+		var process3Item = Model.process3Data[i];
 		@:newWindow.document.write('<tr>');
 		@:newWindow.document.write('<td>' + '@process3Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.serial' + '</td>');
@@ -205,8 +256,10 @@
 			newWindow.document.write('<th>센서값</th>');
 			newWindow.document.write('</tr>');
 
-	@foreach (var process4Item in Model.process4Data)
+			// 데이터를 역순으로 반복하여 출력
+	@for (var i = Model.process4Data.Count - 1; i >= 0; i--)
 	{
+		var process4Item = Model.process4Data[i];
 		@:newWindow.document.write('<tr>');
 		@:newWindow.document.write('<td>' + '@process4Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.serial' + '</td>');
@@ -302,10 +355,6 @@
 			newWindow.document.write('<div class="custom-button">값 적용</div>');
 	}
 		newWindow.document.write('<div style="overflow: auto;">');
-		newWindow.document.write('<table>');
-		// 테이블 출력 코드 추가
-		newWindow.document.write('</table>');
-		newWindow.document.write('</div>');
 	}
 </script>
 
@@ -982,7 +1031,7 @@
 		}
 </style>
 <!-- 새 윈도우 페이지 뜨게 하는 코드 -->
-<divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 400, 400)">오늘 총 생산량</divbutton>
+<divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 1000, 600)">전체 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 400, 400)">전체 불량률</divbutton>
 <button button class="startButton" disabled>대 기 ...</button>
 <divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1500, 900)">전체 이력</divbutton>
