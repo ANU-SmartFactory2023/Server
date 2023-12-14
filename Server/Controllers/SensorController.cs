@@ -66,7 +66,7 @@ namespace Server.Controllers
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
 
 				//화면 초기화
-				//await _hubContext.Clients.All.SendAsync("SetList", "reload");
+				await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
 			}
 			else
@@ -142,9 +142,6 @@ namespace Server.Controllers
             {
                 return;
             }
-
-			//등급 화면 업데이트
-			await _hubContext.Clients.All.SendAsync("SetGradeCount", grade);
 
 			var updateData = ProcessDB.Total_historyModel.Where(
                 x => x.lot_id == lotid && x.serial == serial)

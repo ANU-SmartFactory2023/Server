@@ -85,5 +85,48 @@ namespace Server.Controllers
 
 		}
 
+		[HttpPost("reference")]
+		public async Task<IActionResult> referenceChange([FromBody] ReferenceModel referenceData)
+		{
+			try
+			{
+				var updateData = ProcessDB.ReferenceModel.FirstOrDefault();
+				if (updateData == null)
+				{
+					return NotFound(); // 예외처리를 404 응답으로 변경
+				}
+				else
+				{
+					updateData.top1 = (double)referenceData.top1;
+					updateData.top2 = (double)referenceData.top2;
+					updateData.top3 = (double)referenceData.top3;
+					updateData.top4 = (double)referenceData.top4;
+					updateData.mid1 = (double)referenceData.mid1;
+					updateData.mid2 = (double)referenceData.mid2;
+					updateData.mid3 = (double)referenceData.mid3;
+					updateData.mid4 = (double)referenceData.mid4;
+					updateData.bottom1 = (double)referenceData.bottom1;
+					updateData.bottom2 = (double)referenceData.bottom2;
+					updateData.bottom3 = (double)referenceData.bottom3;
+					updateData.bottom4 = (double)referenceData.bottom4;
+					updateData.A_final = (double)referenceData.A_final;
+					updateData.B_final = (double)referenceData.B_final;
+					updateData.C_final = (double)referenceData.C_final;
+					updateData.A_direction = referenceData.A_direction.ToString();
+					updateData.B_direction = referenceData.B_direction.ToString();
+					updateData.C_direction = referenceData.C_direction.ToString();
+
+					ProcessDB.Update(updateData); //업데이트
+					await ProcessDB.SaveChangesAsync();
+
+					return Ok(); // 성공적인 응답
+				}
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message); // 예외 발생 시 400 응답
+			}
+		}
+
 	}
 }

@@ -229,13 +229,13 @@
 			newWindow.document.write('.box input { width: calc(100% - 10px); height: 30px; margin-bottom: 10px; box-sizing: border-box; }');
 			newWindow.document.write('</style>');
 
-			function createBoxContainer(sensorCount, isFinal, isDirection) {
+			function createBoxContainer(sensorCount, Linename) {
 				newWindow.document.write('<div class="box-container">');
 				for (var i = 1; i <= sensorCount; i++) {
 					var label;
-					if (isFinal) {
+					if (Linename == "final") {
 						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 기준';
-					} else if (isDirection) {
+					} else if (Linename == "direction") {
 						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 방향';
 					} else {
 						label = 'Sensor' + ((i <= 4) ? i : i - 4);
@@ -243,15 +243,100 @@
 
 					newWindow.document.write('<div class="box">');
 					newWindow.document.write('<label>' + label + '</label>');
-					if (!isDirection) {
-						// 최종 방향이 아니면 input box 추가
-						newWindow.document.write('<input type="number" step="0.01" placeholder="값을 입력하세요.">');
-					} else {
+					if (Linename == "final") {
+						if (i == 1) {
+							newWindow.document.write('<input type="number" id="A_final" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].A_final">');
+						}
+						else if (i == 2) {
+							newWindow.document.write('<input type="number" id="B_final" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].B_final">');
+						}
+						else{
+							newWindow.document.write('<input type="number" id="C_final" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].C_final">');
+						}
+					}
+					else if (Linename == "direction") {
 						// 최종 방향이면 버튼 추가
 						newWindow.document.write('<div class="button-container">');
-						newWindow.document.write('<div class="button" onclick="prevDirection()">왼쪽</div>');
-						newWindow.document.write('<div class="button" onclick="nextDirection()">오른쪽</div>');
+						if (i == 1) {
+							var dicr1 = "@Model.referenceData[0].A_direction.ToString()";
+							if (dicr1 == "left") {
+								newWindow.document.write('<div class="button" id="1L" onclick="prevDirection()" style="background-color:#006B3E" disabled>왼쪽</div>');
+								newWindow.document.write('<div class="button" id="1R" onclick="nextDirection()">오른쪽</div>');
+							}
+							else {
+								newWindow.document.write('<div class="button" id="1L" onclick="prevDirection()">왼쪽</div>');
+								newWindow.document.write('<div class="button" id="1R" onclick="nextDirection()" style="background-color:#006B3E" disabled>오른쪽</div>');
+							}
+						}
+						else if (i == 2) {
+							var dicr2 = "@Model.referenceData[0].B_direction.ToString()";
+							if (dicr2 == "left") {
+								newWindow.document.write('<div class="button" id="2L" onclick="prevDirection()" style="background-color:#006B3E" disabled>왼쪽</div>');
+								newWindow.document.write('<div class="button" id="2R" onclick="nextDirection()">오른쪽</div>');
+							}
+							else {
+								newWindow.document.write('<div class="button" id="2L" onclick="prevDirection()">왼쪽</div>');
+								newWindow.document.write('<div class="button" id="2R" onclick="nextDirection()" style="background-color:#006B3E" disabled>오른쪽</div>');
+							}
+						}
+						else if (i == 3) {
+							var dicr3 = "@Model.referenceData[0].C_direction.ToString()";
+							if (dicr3 == "left") {
+								newWindow.document.write('<div class="button" id="3L" onclick="prevDirection()" style="background-color:#006B3E" disabled>왼쪽</div>');
+								newWindow.document.write('<div class="button" id="3R" onclick="nextDirection()">오른쪽</div>');
+							}
+							else {
+								newWindow.document.write('<div class="button" id="3L" onclick="prevDirection()">왼쪽</div>');
+								newWindow.document.write('<div class="button" id="3R" onclick="nextDirection()" style="background-color:#006B3E" disabled>오른쪽</div>');
+							}
+						}
+						
 						newWindow.document.write('</div>');
+					}
+					else {
+						if (Linename == "top") {
+							if (i == 1) {
+								newWindow.document.write('<input type="number" id="top1" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].top1">');
+							}
+							else if (i == 2) {
+								newWindow.document.write('<input type="number" id="top2" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].top2">');
+							}
+							else if (i == 3) {
+								newWindow.document.write('<input type="number" id="top3" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].top3">');
+							}
+							else {
+								newWindow.document.write('<input type="number" id="top4" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].top4">');
+							}
+						}
+						else if (Linename == "mid") {
+							if (i == 1) {
+								newWindow.document.write('<input type="number" id="mid1" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].mid1">');
+							}
+							else if (i == 2) {
+								newWindow.document.write('<input type="number" id="mid2" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].mid2">');
+							}
+							else if (i == 3) {
+								newWindow.document.write('<input type="number" id="mid3" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].mid3">');
+							}
+							else {
+								newWindow.document.write('<input type="number" id="mid4" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].mid4">');
+							}
+						} 
+						else if (Linename == "bottom") {
+							if (i == 1) {
+								newWindow.document.write('<input type="number" id="bottom1" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].bottom1">');
+							}
+							else if (i == 2) {
+								newWindow.document.write('<input type="number" id="bottom2" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].bottom2">');
+							}
+							else if (i == 3) {
+								newWindow.document.write('<input type="number" id="bottom3" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].bottom3">');
+							}
+							else {
+								newWindow.document.write('<input type="number" id="bottom4" step="0.01" placeholder="값을 입력하세요." value="@Model.referenceData[0].bottom4">');
+							}
+						}
+						
 					}
 					newWindow.document.write('</div>');
 				}
@@ -259,19 +344,20 @@
 			}
 
 			newWindow.document.write('<h2>A, B, C 등급 기준값</h2>');
-			createBoxContainer(8);
+			createBoxContainer(4, "top");
+			createBoxContainer(4, "mid");
 
 			newWindow.document.write('<h2 style="margin-top: 20px;">불량(D 등급) 기준값</h2>');
-			createBoxContainer(4);
+			createBoxContainer(4, "bottom");
 
 			// 최종 기준값 추가
 			newWindow.document.write('<h2 style="margin-top: 20px;">최종 기준값</h2>');
-			createBoxContainer(3, true); // 3개의 박스 추가, isFinal 인자에 true 전달
+			createBoxContainer(3, "final"); // 3개의 박스 추가, isFinal 인자에 true 전달
 
 			// 최종 방향 소제목 추가
 			newWindow.document.write('<h2 style="margin-top: 20px;">최종 방향</h2>');
 			// 최종 방향 박스 추가
-			createBoxContainer(3, false, true); // 3개의 박스 추가, isDirection 인자에 true 전달
+			createBoxContainer(3, "direction"); // 3개의 박스 추가, isDirection 인자에 true 전달
 
 			newWindow.document.write('</div>');
 
@@ -302,11 +388,143 @@
 			newWindow.document.write('<div class="custom-button">값 적용</div>');
 	}
 		newWindow.document.write('<div style="overflow: auto;">');
-		newWindow.document.write('<table>');
-		// 테이블 출력 코드 추가
-		newWindow.document.write('</table>');
+
+		// 버튼 클릭 이벤트
+		newWindow.document.querySelector('.custom-button').addEventListener('click', function () {
+			newWindow.document.querySelector('.custom-button').textContent = "적용 됨";
+
+			var b1 = "";
+			var b2 = "";
+			var b3 = "";
+
+			if (newWindow.document.getElementById('1L').disabled == true) {
+				b1 = "left";
+			}
+			else{
+				b1 = "right";
+			}
+			if (newWindow.document.getElementById('2L').disabled == true){
+				b2 = "left";
+			}
+			else{
+				b2 = "right";
+			}
+			if (newWindow.document.getElementById('3L').disabled == true) {
+				b3 = "left";
+			}
+			else {
+				b3 = "right";
+			}
+
+			const jsonData = {
+				top1: parseFloat(newWindow.document.getElementById('top1').value),
+				top2: parseFloat(newWindow.document.getElementById('top2').value),
+				top3: parseFloat(newWindow.document.getElementById('top3').value),
+				top4: parseFloat(newWindow.document.getElementById('top4').value),
+				mid1: parseFloat(newWindow.document.getElementById('mid1').value),
+				mid2: parseFloat(newWindow.document.getElementById('mid2').value),
+				mid3: parseFloat(newWindow.document.getElementById('mid3').value),
+				mid4: parseFloat(newWindow.document.getElementById('mid4').value),
+				bottom1: parseFloat(newWindow.document.getElementById('bottom1').value),
+				bottom2: parseFloat(newWindow.document.getElementById('bottom2').value),
+				bottom3: parseFloat(newWindow.document.getElementById('bottom3').value),
+				bottom4: parseFloat(newWindow.document.getElementById('bottom4').value),
+				A_final: parseFloat(newWindow.document.getElementById('A_final').value),
+				B_final: parseFloat(newWindow.document.getElementById('B_final').value),
+				C_final: parseFloat(newWindow.document.getElementById('C_final').value),
+				A_direction: b1, 
+				B_direction: b2, 
+				C_direction: b3 
+			};
+
+			// jsonData 객체가 유효한 값을 갖고 있는지 확인
+			if (jsonData && typeof jsonData === 'object') {
+				// JSON.stringify 사용
+				const referenceData = JSON.stringify(jsonData);
+
+				// 이제 jsonString을 사용하여 서버로 전송
+				fetch('/pi/start/reference', {
+					method: 'POST',
+					body: referenceData,
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': '*/*'
+					}
+				})
+					.then(response => response.json())
+					.then(data => {
+						// 응답에서 받아온 데이터를 처리 (이 부분은 상황에 따라 다를 수 있습니다.)
+						console.log(data);
+						// 이후 필요한 동작을 수행하세요.
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					});
+			} else {
+				console.error('jsonData is not a valid object');
+			}
+			location.reload(); //새로고침
+		});
+		newWindow.document.getElementById('1L').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('1L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('1R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = '#006B3E'; // 왼쪽 버튼 색상 변경
+			leftButton.disabled = true;
+			rightButton.style.backgroundColor = ''; // 오른쪽 버튼 색상 원래대로
+			rightButton.disabled = false;
+		});
+		newWindow.document.getElementById('1R').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('1L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('1R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = ''; // 왼쪽 버튼 색상 원래대로
+			leftButton.disabled = false;
+			rightButton.style.backgroundColor = '#006B3E'; // 오른쪽 버튼 색상 변경
+			rightButton.disabled = true;
+		});
+		newWindow.document.getElementById('2L').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('2L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('2R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = '#006B3E'; // 왼쪽 버튼 색상 변경
+			leftButton.disabled = true;
+			rightButton.style.backgroundColor = ''; // 오른쪽 버튼 색상 원래대로
+			rightButton.disabled = false;
+		});
+		newWindow.document.getElementById('2R').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('2L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('2R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = ''; // 왼쪽 버튼 색상 원래대로
+			leftButton.disabled = false;
+			rightButton.style.backgroundColor = '#006B3E'; // 오른쪽 버튼 색상 변경
+			rightButton.disabled = true;
+		});
+		newWindow.document.getElementById('3L').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('3L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('3R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = '#006B3E'; // 왼쪽 버튼 색상 변경
+			leftButton.disabled = true;
+			rightButton.style.backgroundColor = ''; // 오른쪽 버튼 색상 원래대로
+			rightButton.disabled = false;
+		});
+		newWindow.document.getElementById('3R').addEventListener('click', function () {
+			var leftButton = newWindow.document.getElementById('3L'); // 왼쪽 버튼 요소
+			var rightButton = newWindow.document.getElementById('3R'); // 오른쪽 버튼 요소
+
+			leftButton.style.backgroundColor = ''; // 왼쪽 버튼 색상 원래대로
+			leftButton.disabled = false;
+			rightButton.style.backgroundColor = '#006B3E'; // 오른쪽 버튼 색상 변경
+			rightButton.disabled = true;
+		});
+
+
 		newWindow.document.write('</div>');
+
 	}
+	
 </script>
 
 <!-- 스타일 추가 -->
@@ -1458,49 +1676,7 @@ else
 		}
 
 	});
-	connection.on("SetGradeCount", function (grade) {
-		if (grade === "A") {
-			const grade = document.querySelector('.GradeBox1 .GradeLabel1');
-			const regex = /[^0-9]/g;
-			const str = grade.textContent;
-			const result = str.replace(regex, "");
 
-			let count = parseInt(result);
-			count = count + 1;
-			grade.textContent = "A 등급 : " + count.toString();
-		}
-		else if (grade === "B"){
-			const grade = document.querySelector('.GradeBox2 .GradeLabel2');
-			const regex = /[^0-9]/g;
-			const str = grade.textContent;
-			const result = str.replace(regex, "");
-
-			let count = parseInt(result);
-			count = count + 1;
-			grade.textContent = "B 등급 : " + count.toString();
-		}
-		else if (grade === "C"){
-			const grade = document.querySelector('.GradeBox3 .GradeLabel3');
-			const regex = /[^0-9]/g;
-			const str = grade.textContent;
-			const result = str.replace(regex, "");
-
-			let count = parseInt(result);
-			count = count + 1;
-			grade.textContent = "C 등급 : " + count.toString();
-		}
-		else if (grade === "D") {
-			const grade = document.querySelector('.GradeBox4 .GradeLabel4');
-			const regex = /[^0-9]/g;
-			const str = grade.textContent;
-			const result = str.replace(regex, "");
-
-			let count = parseInt(result);
-			count = count + 1;
-			grade.textContent = "D 등급 : " + count.toString();
-		}
-
-	});
 
 </script>
 
@@ -1512,6 +1688,8 @@ else
 		const startButton = document.querySelector('.startButton');
 		startButton.style.backgroundColor = 'red'; // 색상 빨강
 		startButton.disabled = true; // 버튼 비활성화
+
+		////센서값 비우기
 
 		// 시작시간 저장, ispressed = true
 		fetch('/pi/start/toggle', {

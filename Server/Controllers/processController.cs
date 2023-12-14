@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Server.Models;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Text.Json;
 
 namespace Server.Controllers
@@ -54,10 +55,7 @@ namespace Server.Controllers
 				////센서값 화면에 표시
 				await _hubContext.Clients.All.SendAsync("setValue", name, "setValue");
 
-				bool defective = false; //임시
-				////불량 여부 판단
-                //DB에서 id로 불량품값 가져오기
-                //비교하여 defective 판단하기(함수로만들어서 묶는게 나을듯)
+				bool defective = await chackReference(id, value); ////불량 여부 판단 //DB에서 id로 불량품값 가져오기
 
 
 				if (defective == true) //불량품
@@ -66,7 +64,7 @@ namespace Server.Controllers
                     await updateDB("grade", id, "D");
 
 					//화면 초기화
-					//await _hubContext.Clients.All.SendAsync("SetList", "reload");
+					await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
 
 					s.msg = "fail";
@@ -78,9 +76,7 @@ namespace Server.Controllers
 
 					if (name == "euvLithography") // 마지막 공정일 경우
 					{
-                        string grade = "A";
-						////등급 판단 //등급 A, B, C, D
-
+                        string grade = chackFinal().ToString(); //등급 판단 //등급 A, B, C
 
 						//등급값 DB저장
 						await updateDB("grade", id, grade);
@@ -118,7 +114,7 @@ namespace Server.Controllers
         }
 
 		[HttpGet("{id}")]
-		public string GetMessage()
+		public async Task<string> GetMessage()
 		{
 			ResponseModel r = new ResponseModel();
 
@@ -132,7 +128,6 @@ namespace Server.Controllers
 				serial = lastData.serial;
 			}
 
-			bool defective = false; ////공정 2가 양품이냐 불량이냐 (임시)
 			//DB에서 공정2의 값 가져오기
             var getProcess2Velue = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
 			if (getProcess2Velue == null)
@@ -140,9 +135,7 @@ namespace Server.Controllers
                 //error
 				//return;
 			}
-
-			////양품, 불량 판단
-            // if (getProcess2Velue.value < 불량판단값)....
+			bool defective = await chackReference(2, (double)getProcess2Velue.value);
 
 			if (defective == false) //양품
 			{
@@ -331,6 +324,93 @@ namespace Server.Controllers
             
 
         }
+		//기준값 비교  //true가 불량품
+		public async Task<bool> chackReference(int id, double value)
+		{
+			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+            
+            if (id == 1)
+            {
 
-    }
+				if (value > chackvalue.bottom1)
+                {
+                    return true; //불량
+                }
+                else
+                {
+                    return false; //양품
+                }
+			}
+            else if (id == 2)
+            {
+				if (value > chackvalue.bottom2)
+				{
+					return true; //불량
+				}
+				else
+				{
+					return false; //양품
+				}
+			}
+            else if(id == 3)
+            {
+				if (value > chackvalue.bottom3)
+				{
+					return true; //불량
+				}
+				else
+				{
+					return false; //양품
+				}
+			}
+            else if(id == 4)
+            {
+                //4공정 등급체크시 전체등급체크를 해야하나? 아니면 함수를 따로 만들까??
+				if (value > chackvalue.bottom4)
+				{
+					return true; //불량
+				}
+				else
+				{
+					return false; //양품
+				}
+
+			}
+            return true;
+		}
+		public async Task<string> chackFinal()
+        {
+			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+			var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+            var P1 = ProcessDB.Process1Model.FirstOrDefault(c => c.idx == lastData.process1_idx);
+			var P2 = ProcessDB.Process2Model.FirstOrDefault(c => c.idx == lastData.process2_idx);
+			var P3 = ProcessDB.Process3Model.FirstOrDefault(c => c.idx == lastData.process3_idx);
+			var P4 = ProcessDB.Process4Model.FirstOrDefault(c => c.idx == lastData.process4_idx);
+
+            var final = (P1.value + P2.value + P3.value + P4.value) / 4;
+
+            if (final > chackvalue.A_final)
+            {
+				return "A";
+			}
+            else if(final < chackvalue.A_final && final > chackvalue.B_final)
+            {
+                return "B";
+            }
+            else if(final < chackvalue.B_final && final > chackvalue.C_final)
+            {
+                return "C";
+            }
+            else if(final < chackvalue.C_final)
+            {
+                return "D";
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
+	}
 }
