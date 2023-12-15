@@ -1544,7 +1544,11 @@ else
 				}
 			}
 			else if (name == "SONIC_IR_SENSOR_NO1") {
-				// 신호가 안올 예정
+				// id에 따라 물체없음 상태로 변경
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = '';
+				}
 
 			}
 			else if (name == "SONIC_IR_SENSOR_NO2") {
@@ -1578,6 +1582,7 @@ else
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 작동중으로 변경
+				document.querySelector(".additionalSubBox2 img").src = "/images/ON.png";
 			}
 			else if (name == "eds") {
 				// id에 따라 공정 작동중으로 변경

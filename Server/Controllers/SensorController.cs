@@ -58,6 +58,7 @@ namespace Server.Controllers
 				////main화면 물체 없음 상태로 변경
 				await _hubContext.Clients.All.SendAsync("DetectState", name, "noting");
 			}
+            //종료
             else if(state == "finalEnd")
             {
 				await updateEndtime(); // 전체공정 end time 저장

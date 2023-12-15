@@ -33,9 +33,9 @@ namespace Server.Controllers
             string cmd = processModel.processCmd;
             string name = processModel.processName;
             double value = processModel.processValue;
-
-            //답장용
-            ResponseModel s = new ResponseModel();
+            value = Math.Round(value, 2);
+			//답장용
+			ResponseModel s = new ResponseModel();
 
             if (cmd == "start")
             {
@@ -76,14 +76,14 @@ namespace Server.Controllers
 
 					if (name == "euvLithography") // 마지막 공정일 경우
 					{
-                        string grade = chackFinal().ToString(); //등급 판단 //등급 A, B, C
+                        string grade = await chackFinal(); //등급 판단 //등급 A, B, C
 
 						//등급값 DB저장
 						await updateDB("grade", id, grade);
 
                         ////왼쪽 오른쪽 판단 
                         ////DB에서 변수 grade에 있는 등급에 해당하는 왼오값을 가져오기
-                        string direction = "left"; ////left or right //현재는 임시, 변경해야함
+                        string direction = await getDirection(grade); ; //left or right
 
 						//결과 
 						s.msg = direction;
@@ -112,7 +112,7 @@ namespace Server.Controllers
 
             return JsonSerializer.Serialize(s);
         }
-
+        
 		[HttpGet("{id}")]
 		public async Task<string> GetMessage()
 		{
@@ -150,7 +150,7 @@ namespace Server.Controllers
 
 			return JsonSerializer.Serialize(r);
 		}
-
+        
 		/*****************************************************DB Update**************************************************************/
 		public async Task updateDB(string mode, int id, string? grade = null, double? value = null) //공정 데이터 생성
         {
@@ -411,6 +411,28 @@ namespace Server.Controllers
             }
 
         }
+        //방향 읽어오기
+		public async Task<string> getDirection(string grade)
+		{
+			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
 
+			if (grade == "A")
+			{
+				return chackvalue.A_direction;
+			}
+			else if (grade == "B")
+			{
+				return chackvalue.B_direction;
+			}
+			else if (grade == "C")
+			{
+				return chackvalue.C_direction;
+			}
+			else
+			{
+				return "fail";
+			}
+
+		}
 	}
 }

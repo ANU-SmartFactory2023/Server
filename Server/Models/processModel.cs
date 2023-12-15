@@ -4,6 +4,6 @@
     {
         public string processCmd { get; set; }
         public string processName { get; set; }
-        public double processValue { get; set; }
+        public float processValue { get; set; }
     }
 }
