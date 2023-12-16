@@ -1426,18 +1426,62 @@ else
 
 	<div class="additionalSubBox5">
 		<div class="processInfo">무게</div>
+		<div class="processValue"> 
+			@{
+				// 해당 조건의 데이터 가져오기
+				var processData1 = Model.process1Data.FirstOrDefault(data => data.lot_id == Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id
+				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
+
+				// processData가 null이면 공백, 아니면 processData.value 출력
+				var valueToShow1 = processData1 != null ? processData1.value.ToString() : string.Empty;
+			}
+			@valueToShow1
+				</div>
 	</div>
 
 	<div class="additionalSubBox6">
 		<div class="processInfo">진동</div>
+		<div class="processValue">
+			@{
+				// 해당 조건의 데이터 가져오기
+				var processData2 = Model.process2Data.FirstOrDefault(data => data.lot_id == Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id
+				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
+
+				// processData가 null이면 공백, 아니면 processData.value 출력
+				var valueToShow2 = processData2 != null ? processData2.value.ToString() : string.Empty;
+			}
+			@valueToShow2
+		</div>
 	</div>
 
 	<div class="additionalSubBox7">
 		<div class="processInfo">전도체 검사</div>
+		<div class="processValue">
+			@{
+				// 해당 조건의 데이터 가져오기
+				var processData3 = Model.process3Data.FirstOrDefault(data => data.lot_id == Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id
+				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
+
+				// processData가 null이면 공백, 아니면 processData.value 출력
+				var valueToShow3 = processData3 != null ? processData3.value.ToString() : string.Empty;
+			}
+			@valueToShow3
+		</div>
 	</div>
 
 	<div class="additionalSubBox8">
 		<div class="processInfo">온도</div>
+		<div class="processValue">
+			@{
+				// 해당 조건의 데이터 가져오기
+				var processData4 = Model.process4Data.FirstOrDefault(data => data.lot_id == Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id
+				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
+
+				// processData가 null이면 공백, 아니면 processData.value 출력
+				var valueToShow4 = processData4 != null ? processData4.value.ToString() : string.Empty;
+			}
+			@valueToShow4
+		</div>
 	</div>
 </div>
 
@@ -1467,6 +1511,11 @@ else
 			startButton.innerHTML = '시 작'; // 버튼 안의 텍스트 변경
 
 			////센서값들 빈값으로 변경
+			document.querySelector('.additionalSubBox5 .processValue').textContent = "";
+			document.querySelector('.additionalSubBox6 .processValue').textContent = "";
+			document.querySelector('.additionalSubBox7 .processValue').textContent = "";
+			document.querySelector('.additionalSubBox8 .processValue').textContent = "";
+
 		}
 		else if (buttonState === "endbutton"){
 			//start버튼 비활성화
@@ -1474,19 +1523,6 @@ else
 			startButton.disabled = true; // 버튼 활성화
 			startButton.style.backgroundColor = ''; // 색상을 원하는 값으로 변경
 			startButton.innerHTML = '대 기 ...'; // 버튼 안의 텍스트 변경
-			// 시작시간 저장, ispressed = true
-			fetch('/pi/start/toggle', {
-				method: 'POST', // 또는 'GET' 등 요청 메서드 지정
-			})
-				.then(response => response.json())
-				.then(data => {
-					// 응답에서 받아온 데이터를 처리 (이 부분은 상황에 따라 다를 수 있습니다.)
-					console.log(data);
-					// 이후 필요한 동작을 수행하세요.
-				})
-				.catch(error => {
-					console.error('Error:', error);
-				});
 		}
 	});
 	connection.on("DetectState", function (name, state) {
@@ -1544,7 +1580,11 @@ else
 				}
 			}
 			else if (name == "SONIC_IR_SENSOR_NO1") {
-				// 신호가 안올 예정
+				// id에 따라 물체없음 상태로 변경
+				const firstCircle = document.querySelector('.horizontalBox .circle[data-process="SONIC_IR_SENSOR_PIN_NO1"]');
+				if (firstCircle) {
+					firstCircle.style.backgroundColor = '';
+				}
 
 			}
 			else if (name == "SONIC_IR_SENSOR_NO2") {
@@ -1578,6 +1618,7 @@ else
 			}
 			else if (name == "etching") {
 				// id에 따라 공정 작동중으로 변경
+				document.querySelector(".additionalSubBox2 img").src = "/images/ON.png";
 			}
 			else if (name == "eds") {
 				// id에 따라 공정 작동중으로 변경
@@ -1729,22 +1770,23 @@ else
 			}
 		}
 	});
-	connection.on("setValue", function (name, setValue) {
-		if (setValue === "setValue ") {
-			if (name == "photolithography") {
-				// id에 따라 센서값 화면에 표시
-			}
-			else if (name == "etching") {
-				// id에 따라 센서값 화면에 표시
-			}
-			else if (name == "eds") {
-				// id에 따라 센서값 화면에 표시
-			}
-			else if (name == "euvLithography") {
-				// id에 따라 센서값 화면에 표시
-			}
+	connection.on("setValue", function (name, value) {
+		if (name == "photolithography") {
+			// id에 따라 센서값 화면에 표시
+			document.querySelector('.additionalSubBox5 .processValue').textContent = value;
 		}
-		
+		else if (name == "etching") {
+			// id에 따라 센서값 화면에 표시
+			document.querySelector('.additionalSubBox6 .processValue').textContent = value;
+		}
+		else if (name == "eds") {
+			// id에 따라 센서값 화면에 표시
+			document.querySelector('.additionalSubBox7 .processValue').textContent = value;
+		}
+		else if (name == "euvLithography") {
+			// id에 따라 센서값 화면에 표시
+			document.querySelector('.additionalSubBox8 .processValue').textContent = value;
+		}
 	});
 	connection.on("SetLotID", function (lotid, serial) {
 		const SetLotID = document.querySelector('.lotSerialBox .lotSerialLabel[data-process="LodID"]');

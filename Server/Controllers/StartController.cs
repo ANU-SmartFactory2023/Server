@@ -29,25 +29,7 @@ namespace Server.Controllers
             {
 				r.msg = "ok";
 				r.statusCode = 200;
-			}
-            else
-            {
-				////main화면 start버튼 활성화
-				//await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton"); //테스트용
-				r.msg = "wait";
-				r.statusCode = 500;
-            }
 
-            return JsonSerializer.Serialize(r);
-        }
-
-		[HttpPost("toggle")]
-		public async Task ToggleIsPressed()
-		{
-            isPressed = !isPressed;
-
-			if(isPressed == true)
-			{
 				//시작시간 추가
 				DateTime now = DateTime.Now;
 				//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
@@ -61,7 +43,7 @@ namespace Server.Controllers
 				}
 				else
 				{
-					return;
+					//return;
 				}
 
 				var updateData = ProcessDB.Total_historyModel.Where(
@@ -70,8 +52,8 @@ namespace Server.Controllers
 
 				if (updateData == null)
 				{
-					//예외처리?
-					return;
+					r.msg = "error";
+					r.statusCode = 500;
 				}
 				else
 				{
@@ -81,7 +63,24 @@ namespace Server.Controllers
 					await ProcessDB.SaveChangesAsync();
 
 				}
+				isPressed = false;
 			}
+            else
+            {
+				////main화면 start버튼 활성화
+				await _hubContext.Clients.All.SendAsync("ActivateButton", "startButton"); //테스트용
+				r.msg = "wait";
+				r.statusCode = 500;
+            }
+
+            return JsonSerializer.Serialize(r);
+        }
+
+		/*******************************아래는 내부 통신관련(시작버튼시 시작시간, 기준값 변경)**********************************/
+		[HttpPost("toggle")]
+		public async Task ToggleIsPressed()
+		{
+            isPressed = true;
 
 		}
 
