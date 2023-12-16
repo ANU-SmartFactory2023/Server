@@ -52,8 +52,8 @@ namespace Server.Controllers
 
 				if (updateData == null)
 				{
-					//예외처리?
-					//return;
+					r.msg = "error";
+					r.statusCode = 500;
 				}
 				else
 				{
@@ -63,6 +63,7 @@ namespace Server.Controllers
 					await ProcessDB.SaveChangesAsync();
 
 				}
+				isPressed = false;
 			}
             else
             {
@@ -79,7 +80,7 @@ namespace Server.Controllers
 		[HttpPost("toggle")]
 		public async Task ToggleIsPressed()
 		{
-            isPressed = !isPressed;
+            isPressed = true;
 
 		}
 

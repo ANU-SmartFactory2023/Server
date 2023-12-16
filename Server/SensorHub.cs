@@ -18,9 +18,9 @@ namespace Server
 		{
 			await Clients.All.SendAsync("WorkingState", name, state);
 		}
-		public async Task SendSenSor(string name, string setValue) //센서값
+		public async Task SendSenSor(string name, string value) //센서값
 		{
-			await Clients.All.SendAsync("setValue", name, setValue);
+			await Clients.All.SendAsync("setValue", name, value);
 		}
 		public async Task SetLotID(string lotid, string serial) //lot id, Serial
 		{

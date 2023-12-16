@@ -34,6 +34,8 @@ namespace Server.Controllers
             string name = processModel.processName;
             double value = processModel.processValue;
             value = Math.Round(value, 2);
+			Console.WriteLine($"recv post id : {id}, Process cmd:{cmd}, namd:{name}, value:{value}");
+
 			//답장용
 			ResponseModel s = new ResponseModel();
 
@@ -53,15 +55,18 @@ namespace Server.Controllers
                 await updateDB(cmd, id, null, value);
 
 				////센서값 화면에 표시
-				await _hubContext.Clients.All.SendAsync("setValue", name, "setValue");
+				await _hubContext.Clients.All.SendAsync("setValue", name, value);
 
 				bool defective = await chackReference(id, value); ////불량 여부 판단 //DB에서 id로 불량품값 가져오기
 
 
-				if (defective == true) //불량품
+				if (defective == false) //불량품
                 {
                     //등급외 DB 저장
                     await updateDB("grade", id, "D");
+
+					////버튼 초기화
+					await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
 
 					//화면 초기화
 					await _hubContext.Clients.All.SendAsync("SetList", "reload");
@@ -70,7 +75,7 @@ namespace Server.Controllers
 					s.msg = "fail";
                     s.statusCode = 200;
                 }
-                else if(defective == false){ //양품
+                else if(defective == true){ //양품
 					////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
 					await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
 
@@ -132,22 +137,26 @@ namespace Server.Controllers
             var getProcess2Velue = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
 			if (getProcess2Velue == null)
 			{
-                //error
-				//return;
-			}
-			bool defective = await chackReference(2, (double)getProcess2Velue.value);
-
-			if (defective == false) //양품
-			{
-				r.msg = "pass";
-				r.statusCode = 200;
-			}
-			else                    //불량품
-			{
 				r.msg = "fail";
 				r.statusCode = 200;
 			}
+            else
+            {
+				bool defective = await chackReference(2, (double)getProcess2Velue.value);
 
+				if (defective == true) //양품
+				{
+					r.msg = "pass";
+					r.statusCode = 200;
+				}
+				else                    //불량품
+				{
+					r.msg = "fail";
+					r.statusCode = 200;
+				}
+			}
+
+            Console.WriteLine( "Process Get msg : " + r.msg);
 			return JsonSerializer.Serialize(r);
 		}
         
@@ -327,106 +336,132 @@ namespace Server.Controllers
 		//기준값 비교  //true가 불량품
 		public async Task<bool> chackReference(int id, double value)
 		{
-			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
-            
+			var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+            if( checkvalue == null)
+            {
+                return false;
+            }
+
             if (id == 1)
             {
 
-				if (value > chackvalue.bottom1)
+				if (value > checkvalue.bottom1)
                 {
-                    return true; //불량
+                    return false; //불량
                 }
                 else
                 {
-                    return false; //양품
+                    return true; //양품
                 }
 			}
             else if (id == 2)
             {
-				if (value > chackvalue.bottom2)
+				if (value > checkvalue.bottom2)
 				{
-					return true; //불량
+					return false; //불량
 				}
 				else
 				{
-					return false; //양품
+					return true; //양품
 				}
 			}
             else if(id == 3)
             {
-				if (value > chackvalue.bottom3)
+				if (value > checkvalue.bottom3)
 				{
-					return true; //불량
+					return false; //불량
 				}
 				else
 				{
-					return false; //양품
+					return true; //양품
 				}
 			}
             else if(id == 4)
             {
                 //4공정 등급체크시 전체등급체크를 해야하나? 아니면 함수를 따로 만들까??
-				if (value > chackvalue.bottom4)
+				if (value > checkvalue.bottom4)
 				{
-					return true; //불량
+					return false; //불량
 				}
 				else
 				{
-					return false; //양품
+					return true; //양품
 				}
 
 			}
-            return true;
+
+            return false;
 		}
 		public async Task<string> chackFinal()
         {
-			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
-			var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
-            var P1 = ProcessDB.Process1Model.FirstOrDefault(c => c.idx == lastData.process1_idx);
-			var P2 = ProcessDB.Process2Model.FirstOrDefault(c => c.idx == lastData.process2_idx);
-			var P3 = ProcessDB.Process3Model.FirstOrDefault(c => c.idx == lastData.process3_idx);
-			var P4 = ProcessDB.Process4Model.FirstOrDefault(c => c.idx == lastData.process4_idx);
-
-            var final = (P1.value + P2.value + P3.value + P4.value) / 4;
-
-            if (final > chackvalue.A_final)
+            try
             {
-				return "A";
+				var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+				if (checkvalue == null)
+				{
+					return "error";
+				}
+
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+
+				var P1 = ProcessDB.Process1Model.FirstOrDefault(c => c.idx == lastData.process1_idx);
+				var P2 = ProcessDB.Process2Model.FirstOrDefault(c => c.idx == lastData.process2_idx);
+				var P3 = ProcessDB.Process3Model.FirstOrDefault(c => c.idx == lastData.process3_idx);
+				var P4 = ProcessDB.Process4Model.FirstOrDefault(c => c.idx == lastData.process4_idx);
+
+				var final = ( 
+                    ( P1 == null ? 0 : P1.value ) + 
+                    ( P2 == null ? 0 : P2.value ) + 
+                    ( P3 == null ? 0 : P3.value ) + 
+                    ( P4 == null ? 0 : P4.value ) 
+                    ) / 4;
+
+				if (final > checkvalue.A_final)
+				{
+					return "A";
+				}
+				else if (final < checkvalue.A_final && final > checkvalue.B_final)
+				{
+					return "B";
+				}
+				else if (final < checkvalue.B_final && final > checkvalue.C_final)
+				{
+					return "C";
+				}
+				else if (final < checkvalue.C_final)
+				{
+					return "D";
+				}
+				else
+				{
+					return "error";
+				}
 			}
-            else if(final < chackvalue.A_final && final > chackvalue.B_final)
+            catch (Exception ex)
             {
-                return "B";
-            }
-            else if(final < chackvalue.B_final && final > chackvalue.C_final)
-            {
-                return "C";
-            }
-            else if(final < chackvalue.C_final)
-            {
-                return "D";
-            }
-            else
-            {
-                return "error";
-            }
-
+				return "error " + ex.Message;
+			}
         }
         //방향 읽어오기
 		public async Task<string> getDirection(string grade)
 		{
-			var chackvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+			var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+            if( checkvalue == null )
+            {
+                return "fail";
+            }
 
 			if (grade == "A")
 			{
-				return chackvalue.A_direction;
+				return checkvalue.A_direction;
 			}
 			else if (grade == "B")
 			{
-				return chackvalue.B_direction;
+				return checkvalue.B_direction;
 			}
 			else if (grade == "C")
 			{
-				return chackvalue.C_direction;
+				return checkvalue.C_direction;
 			}
 			else
 			{
