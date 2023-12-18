@@ -39,7 +39,7 @@ namespace Server.Controllers
 				////main화면 물체 감지 상태로 변경
 				await _hubContext.Clients.All.SendAsync("DetectState", name, "detected"); //name으로 변경 해야함***********
 
-				if (name == "INPUT_IR_SENSOR") //나중에 수정해야함
+				if (name == "INPUT_IR_SENSOR")
                 {
 
 					await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
@@ -67,7 +67,7 @@ namespace Server.Controllers
 				}
 			}
             //종료
-            else if(state == "finalEnd")
+            else if(state == "END_TIME")
             {
 				await updateEndtime(); // 전체공정 end time 저장
 

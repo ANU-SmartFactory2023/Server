@@ -428,15 +428,15 @@ namespace Server.Controllers
 
 			if (id == 1)
 			{
-				if(value < checkvalue.top1)
+				if(value <= checkvalue.top1)
 				{
 					return "A";
 				}
-				else if(value > checkvalue.top1 && value < checkvalue.mid1)
+				else if(value > checkvalue.top1 && value <= checkvalue.mid1)
 				{ 
 					return "B"; 
 				}
-				else if(value > checkvalue.mid1 && value < checkvalue.bottom1)
+				else if(value > checkvalue.mid1 && value <= checkvalue.bottom1)
 				{
 					return "C";
 				}
@@ -451,15 +451,15 @@ namespace Server.Controllers
 			}
 			else if (id == 2) //크다 작다 바꿔야할 수도 있음
 			{
-				if (value < checkvalue.top2)
+				if (value <= checkvalue.top2)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top2 && value < checkvalue.mid2)
+				else if (value > checkvalue.top2 && value <= checkvalue.mid2)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid2 && value < checkvalue.bottom2)
+				else if (value > checkvalue.mid2 && value <= checkvalue.bottom2)
 				{
 					return "C";
 				}
@@ -474,15 +474,15 @@ namespace Server.Controllers
 			}
 			else if (id == 3) //크다 작다 바꿔야할 수도 있음
 			{
-				if (value < checkvalue.top3)
+				if (value <= checkvalue.top3)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top3 && value < checkvalue.mid3)
+				else if (value > checkvalue.top3 && value <= checkvalue.mid3)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid3 && value < checkvalue.bottom3)
+				else if (value > checkvalue.mid3 && value <= checkvalue.bottom3)
 				{
 					return "C";
 				}
@@ -497,15 +497,15 @@ namespace Server.Controllers
 			}
 			else if (id == 4) //크다 작다 바꿔야할 수도 있음
 			{
-				if (value < checkvalue.top4)
+				if (value <= checkvalue.top4)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top4 && value < checkvalue.mid4)
+				else if (value > checkvalue.top4 && value <= checkvalue.mid4)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid4 && value < checkvalue.bottom4)
+				else if (value > checkvalue.mid4 && value <= checkvalue.bottom4)
 				{
 					return "C";
 				}
@@ -547,19 +547,19 @@ namespace Server.Controllers
                     ( P4 == null ? 0 : P4.value ) 
                     ) / 4;
 
-				if (final > checkvalue.A_final)
+				if (final <= checkvalue.A_final)
 				{
 					return "A";
 				}
-				else if (final < checkvalue.A_final && final > checkvalue.B_final)
+				else if (final > checkvalue.A_final && final <= checkvalue.B_final)
 				{
 					return "B";
 				}
-				else if (final < checkvalue.B_final && final > checkvalue.C_final)
+				else if (final > checkvalue.B_final && final <= checkvalue.C_final)
 				{
 					return "C";
 				}
-				else if (final < checkvalue.C_final)
+				else if (final > checkvalue.C_final)
 				{
 					return "D";
 				}
