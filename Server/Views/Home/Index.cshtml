@@ -172,10 +172,10 @@
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
-			newWindow.document.write('<th>프로세스1</th>');
-			newWindow.document.write('<th>프로세스2</th>');
-			newWindow.document.write('<th>프로세스3</th>');
-			newWindow.document.write('<th>프로세스4</th>');
+			newWindow.document.write('<th>산화공정_IDX</th>');
+			newWindow.document.write('<th>포토공정_IDX</th>');
+			newWindow.document.write('<th>증착공정_IDX</th>');
+			newWindow.document.write('<th>패키지공정_IDX</th>');
 			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 	// 데이터를 역순으로 반복하여 출력
@@ -204,12 +204,14 @@
 			newWindow.document.write('<h2>산화 공정 데이터</h2>');
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 	// 데이터를 역순으로 반복하여 출력
@@ -217,12 +219,14 @@
 	{
 		var process1Item = Model.process1Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process1Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -232,12 +236,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -245,12 +251,14 @@
 	{
 		var process2Item = Model.process2Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process2Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -260,12 +268,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -273,12 +283,14 @@
 	{
 		var process3Item = Model.process3Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process3Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -288,12 +300,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -301,12 +315,14 @@
 	{
 		var process4Item = Model.process4Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process4Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
