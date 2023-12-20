@@ -172,10 +172,10 @@
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
-			newWindow.document.write('<th>프로세스1</th>');
-			newWindow.document.write('<th>프로세스2</th>');
-			newWindow.document.write('<th>프로세스3</th>');
-			newWindow.document.write('<th>프로세스4</th>');
+			newWindow.document.write('<th>산화공정_IDX</th>');
+			newWindow.document.write('<th>포토공정_IDX</th>');
+			newWindow.document.write('<th>증착공정_IDX</th>');
+			newWindow.document.write('<th>패키지공정_IDX</th>');
 			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 	// 데이터를 역순으로 반복하여 출력
@@ -204,12 +204,14 @@
 			newWindow.document.write('<h2>산화 공정 데이터</h2>');
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 	// 데이터를 역순으로 반복하여 출력
@@ -217,12 +219,14 @@
 	{
 		var process1Item = Model.process1Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process1Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process1Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process1Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -232,12 +236,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -245,12 +251,14 @@
 	{
 		var process2Item = Model.process2Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process2Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process2Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process2Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -260,12 +268,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -273,12 +283,14 @@
 	{
 		var process3Item = Model.process3Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process3Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process3Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process3Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -288,12 +300,14 @@
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
+			newWindow.document.write('<th>IDX</th>');
 			newWindow.document.write('<th>LOT ID</th>');
 			newWindow.document.write('<th>SERIAL</th>');
 			newWindow.document.write('<th>시작 시간</th>');
 			newWindow.document.write('<th>끝난 시간</th>');
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>센서값</th>');
+			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 
 			// 데이터를 역순으로 반복하여 출력
@@ -301,12 +315,14 @@
 	{
 		var process4Item = Model.process4Data[i];
 		@:newWindow.document.write('<tr>');
+		@:newWindow.document.write('<td>' + '@process4Item.idx' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.lot_id' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.serial' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.start_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.end_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.spend_time' + '</td>');
 		@:newWindow.document.write('<td>' + '@process4Item.value' + '</td>');
+		@:newWindow.document.write('<td>' + '@process4Item.grade' + '</td>');
 		@:newWindow.document.write('</tr>');
 	}
 		newWindow.document.write('</table>');
@@ -1296,7 +1312,7 @@
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 1000, 600)">전체 생산량</divbutton>
 <divbutton button class="totalDefectRateButton" onclick="openNewWindow('totalDefectRate', 1000, 600)">전체 불량 갯수</divbutton>
 <button button class="startButton" disabled>대 기 ...</button>
-<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1600, 900)">전체 이력</divbutton>
+<divbutton button class="fullHistoryButton" onclick="openNewWindow('fullHistory', 1700, 900)">전체 이력</divbutton>
 <divbutton button class="individualHistoryButton">
 	개별 이력
 	<div class="dropdown-content">
@@ -1344,7 +1360,7 @@ else
 <div class="wrapperBox">
 	<!-- 첫 번째 상자 -->
 	<div class="subBox1">
-		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
+		<div class="processInfo">포토 공정</div>
 		<div class="innerBox">
 			<div class="labelBox" data-process="total">총수량 : @Model.process1Data.Count</div>
 			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process1_idx != null && data.process2_idx == null) </div>
@@ -1354,7 +1370,7 @@ else
 
 	<!-- 두 번째 상자 -->
 	<div class="subBox2">
-		<div class="processInfo">포토, 식각 공정</div>
+		<div class="processInfo">식각 공정</div>
 		<div class="innerBox">
 			<div class="labelBox" data-process="total">총수량 : @Model.process2Data.Count</div>
 			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process2_idx != null && data.process3_idx == null) </div>
@@ -1364,7 +1380,7 @@ else
 
 	<!-- 세 번째 상자 -->
 	<div class="subBox3">
-		<div class="processInfo">증착, 금속배선 공정</div>
+		<div class="processInfo">EDS 공정</div>
 		<div class="innerBox">
 			<div class="labelBox" data-process="total">총수량 : @Model.process3Data.Count</div>
 			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process3_idx != null && data.process4_idx == null)</div>
@@ -1374,7 +1390,7 @@ else
 
 	<!-- 네 번째 상자 -->
 	<div class="subBox4">
-		<div class="processInfo">EDS, 패키징 공정</div>
+		<div class="processInfo">EUV 공정</div>
 		<div class="innerBox">
 			<div class="labelBox" data-process="total">총수량 : @Model.process4Data.Count</div>
 			<div class="labelBox" data-process="defect">불량품 : @Model.Total_historyData.Count(data => data.grade == "D" && data.process4_idx != null)</div>
@@ -1405,27 +1421,27 @@ else
 
 	<!-- 8 개의 상자 -->
 	<div class="additionalSubBox1">
-		<div class="processInfo">웨이퍼 제조, 산화 공정</div>
+		<div class="processInfo">포토 공정</div>
 		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox2">
-		<div class="processInfo">포토, 식각 공정</div>
+		<div class="processInfo">식각 공정</div>
 		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox3">
-		<div class="processInfo">증착, 금속배선 공정</div>
+		<div class="processInfo">EDS 공정</div>
 		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox4">
-		<div class="processInfo">EDS, 패키징 공정</div>
+		<div class="processInfo">EUV 공정</div>
 		<img src="~/images/OFF.png">
 	</div>
 
 	<div class="additionalSubBox5">
-		<div class="processInfo">무게</div>
+		<div class="processInfo">회로인쇄율</div>
 		<div class="processValue"> 
 			@{
 				// 해당 조건의 데이터 가져오기
@@ -1440,7 +1456,7 @@ else
 	</div>
 
 	<div class="additionalSubBox6">
-		<div class="processInfo">진동</div>
+		<div class="processInfo">단차</div>
 		<div class="processValue">
 			@{
 				// 해당 조건의 데이터 가져오기
@@ -1455,7 +1471,7 @@ else
 	</div>
 
 	<div class="additionalSubBox7">
-		<div class="processInfo">전도체 검사</div>
+		<div class="processInfo">전도성</div>
 		<div class="processValue">
 			@{
 				// 해당 조건의 데이터 가져오기
@@ -1470,7 +1486,7 @@ else
 	</div>
 
 	<div class="additionalSubBox8">
-		<div class="processInfo">온도</div>
+		<div class="processInfo">반사율</div>
 		<div class="processValue">
 			@{
 				// 해당 조건의 데이터 가져오기

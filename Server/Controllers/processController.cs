@@ -57,38 +57,35 @@ namespace Server.Controllers
 				////센서값 화면에 표시
 				await _hubContext.Clients.All.SendAsync("setValue", name, value);
 
-				bool defective = await chackReference(id, value); ////불량 여부 판단 //DB에서 id로 불량품값 가져오기
+                //각 공정 등급 판단
+                string grade = await chackGrade(id, value);
+				//각 공정 등급 DB저장
+				await updateDB("grade", id, grade);
 
+				////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
+				await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
 
-				if (defective == false) //불량품
+				if (grade == "D") //불량품
                 {
                     //등급외 DB 저장
-                    await updateDB("grade", id, "D");
-
-					////버튼 초기화
-					await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
-
-					//화면 초기화
-					await _hubContext.Clients.All.SendAsync("SetList", "reload");
-
+                    await updateDB("totalgrade", id, "D");
 
 					s.msg = "fail";
                     s.statusCode = 200;
                 }
-                else if(defective == true){ //양품
-					////main화면 공정 끝으로 변경, 수량, 불량률 화면 수정
-					await _hubContext.Clients.All.SendAsync("WorkingState", name, "end");
+                else if(grade == "A" || grade == "B" || grade == "C")
+				{ //양품
 
 					if (name == "euvLithography") // 마지막 공정일 경우
 					{
-                        string grade = await chackFinal(); //등급 판단 //등급 A, B, C
+                        string totalgrade = await chackFinal(); //최종 등급 판단 //등급 A, B, C
 
-						//등급값 DB저장
-						await updateDB("grade", id, grade);
+						//최종 등급값 DB저장
+						await updateDB("totalgrade", id, totalgrade);
 
                         ////왼쪽 오른쪽 판단 
                         ////DB에서 변수 grade에 있는 등급에 해당하는 왼오값을 가져오기
-                        string direction = await getDirection(grade); ; //left or right
+                        string direction = await getDirection(totalgrade); ; //left or right
 
 						//결과 
 						s.msg = direction;
@@ -142,9 +139,7 @@ namespace Server.Controllers
 			}
             else
             {
-				bool defective = await chackReference(2, (double)getProcess2Velue.value);
-
-				if (defective == true) //양품
+				if (getProcess2Velue.grade == "A" || getProcess2Velue.grade == "B" || getProcess2Velue.grade == "C") //양품
 				{
 					r.msg = "pass";
 					r.statusCode = 200;
@@ -218,23 +213,40 @@ namespace Server.Controllers
                     switch (id)
                     {
                         case 1:
-                            await updateEnd<Process1Model>(mode, lotid, serial,value);
+                            await updateEnd<Process1Model>(lotid, serial,value);
                             break;
                         case 2:
-                            await updateEnd<Process2Model>(mode, lotid, serial, value);
+                            await updateEnd<Process2Model>(lotid, serial, value);
                             break;
                         case 3:
-                            await updateEnd<Process3Model>(mode, lotid, serial, value);
+                            await updateEnd<Process3Model>(lotid, serial, value);
                             break;
                         default:
-                            await updateEnd<Process4Model>(mode, lotid, serial, value);
+                            await updateEnd<Process4Model>(lotid, serial, value);
                             break;
                     }
                     break;
                 case "grade":
-                    await updateGrade<Total_historyModel>(lotid, serial, grade);
+					switch (id)
+					{
+						case 1:
+							await updateGrade<Process1Model>(lotid, serial, grade);
+							break;
+						case 2:
+							await updateGrade<Process2Model>(lotid, serial, grade);
+							break;
+						case 3:
+							await updateGrade<Process3Model>(lotid, serial, grade);
+							break;
+						default:
+							await updateGrade<Process4Model>(lotid, serial, grade);
+							break;
+					}
                     break;
-                default:
+				case "totalgrade":
+					await updateTotalGrade<Total_historyModel>(lotid, serial, grade);
+                    break;
+				default:
                     break;
             }
             
@@ -291,7 +303,7 @@ namespace Server.Controllers
 
         }
         
-        public async Task updateEnd<T>(string mode, string lotid, int serial, double? value = null) where T : ProcessBaseModel, new()
+        public async Task updateEnd<T>(string lotid, int serial, double? value = null) where T : ProcessBaseModel, new()
         {
             var updateData = ProcessDB.Set<T>().FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
 
@@ -314,8 +326,24 @@ namespace Server.Controllers
             ProcessDB.Update(updateData);
             await ProcessDB.SaveChangesAsync();
         }
+        //각 공정 등급 저장
+		public async Task updateGrade<T>(string lotid, int serial, string grade) where T : ProcessBaseModel, new()
+		{
+			var updateData = ProcessDB.Set<T>().FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
 
-        public async Task updateGrade<T>(string lotid, int serial, string grade) where T : Total_historyModel, new()
+			if (updateData == null)
+			{
+				//예외처리
+				return;
+			}
+           
+			updateData.grade = grade;
+
+			ProcessDB.Update(updateData);
+			await ProcessDB.SaveChangesAsync();
+		}
+
+		public async Task updateTotalGrade<T>(string lotid, int serial, string grade) where T : Total_historyModel, new()
         {
             var updateData = ProcessDB.Set<T>().FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
 
@@ -327,71 +355,174 @@ namespace Server.Controllers
 
             updateData.grade = grade;
 
-            
             ProcessDB.Update(updateData);
             await ProcessDB.SaveChangesAsync();
-            
-
         }
 		//기준값 비교  //true가 불량품
-		public async Task<bool> chackReference(int id, double value)
+		//public async Task<bool> chackReference(int id, double value)
+		//{
+		//	var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
+		//          if( checkvalue == null)
+		//          {
+		//              return false;
+		//          }
+
+		//          if (id == 1)
+		//          {
+
+		//		if (value > checkvalue.bottom1)
+		//              {
+		//                  return false; //불량
+		//              }
+		//              else
+		//              {
+		//                  return true; //양품
+		//              }
+		//	}
+		//          else if (id == 2)
+		//          {
+		//		if (value > checkvalue.bottom2)
+		//		{
+		//			return false; //불량
+		//		}
+		//		else
+		//		{
+		//			return true; //양품
+		//		}
+		//	}
+		//          else if(id == 3)
+		//          {
+		//		if (value > checkvalue.bottom3)
+		//		{
+		//			return false; //불량
+		//		}
+		//		else
+		//		{
+		//			return true; //양품
+		//		}
+		//	}
+		//          else if(id == 4)
+		//          {
+		//              //4공정 등급체크시 전체등급체크를 해야하나? 아니면 함수를 따로 만들까??
+		//		if (value > checkvalue.bottom4)
+		//		{
+		//			return false; //불량
+		//		}
+		//		else
+		//		{
+		//			return true; //양품
+		//		}
+
+		//	}
+
+		//          return false;
+		//}
+		//각 공정 등급 판단
+		public async Task<string> chackGrade(int id, double value)
 		{
 			var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
-            if( checkvalue == null)
-            {
-                return false;
-            }
-
-            if (id == 1)
-            {
-
-				if (value > checkvalue.bottom1)
-                {
-                    return false; //불량
-                }
-                else
-                {
-                    return true; //양품
-                }
+			if (checkvalue == null)
+			{
+				return "error";
 			}
-            else if (id == 2)
-            {
-				if (value > checkvalue.bottom2)
+
+			if (id == 1)
+			{
+				if(value <= checkvalue.top1)
 				{
-					return false; //불량
+					return "A";
+				}
+				else if(value > checkvalue.top1 && value <= checkvalue.mid1)
+				{ 
+					return "B"; 
+				}
+				else if(value > checkvalue.mid1 && value <= checkvalue.bottom1)
+				{
+					return "C";
+				}
+				else if (value > checkvalue.bottom1)
+				{
+					return "D"; //불량
 				}
 				else
 				{
-					return true; //양품
+					return "error";
 				}
 			}
-            else if(id == 3)
-            {
-				if (value > checkvalue.bottom3)
+			else if (id == 2) //크다 작다 바꿔야할 수도 있음
+			{
+				if (value <= checkvalue.top2)
 				{
-					return false; //불량
+					return "A";
+				}
+				else if (value > checkvalue.top2 && value <= checkvalue.mid2)
+				{
+					return "B";
+				}
+				else if (value > checkvalue.mid2 && value <= checkvalue.bottom2)
+				{
+					return "C";
+				}
+				else if (value > checkvalue.bottom2)
+				{
+					return "D"; //불량
 				}
 				else
 				{
-					return true; //양품
+					return "error";
 				}
 			}
-            else if(id == 4)
-            {
-                //4공정 등급체크시 전체등급체크를 해야하나? 아니면 함수를 따로 만들까??
-				if (value > checkvalue.bottom4)
+			else if (id == 3) //크다 작다 바꿔야할 수도 있음
+			{
+				if (value <= checkvalue.top3)
 				{
-					return false; //불량
+					return "A";
+				}
+				else if (value > checkvalue.top3 && value <= checkvalue.mid3)
+				{
+					return "B";
+				}
+				else if (value > checkvalue.mid3 && value <= checkvalue.bottom3)
+				{
+					return "C";
+				}
+				else if (value > checkvalue.bottom3)
+				{
+					return "D"; //불량
 				}
 				else
 				{
-					return true; //양품
+					return "error";
+				}
+			}
+			else if (id == 4) //크다 작다 바꿔야할 수도 있음
+			{
+				if (value <= checkvalue.top4)
+				{
+					return "A";
+				}
+				else if (value > checkvalue.top4 && value <= checkvalue.mid4)
+				{
+					return "B";
+				}
+				else if (value > checkvalue.mid4 && value <= checkvalue.bottom4)
+				{
+					return "C";
+				}
+				else if (value > checkvalue.bottom4)
+				{
+					return "D"; //불량
+				}
+				else
+				{
+					return "error";
 				}
 
 			}
 
-            return false;
+			return "error";
 		}
+		//최종 등급 판단
 		public async Task<string> chackFinal()
         {
             try
@@ -416,19 +547,19 @@ namespace Server.Controllers
                     ( P4 == null ? 0 : P4.value ) 
                     ) / 4;
 
-				if (final > checkvalue.A_final)
+				if (final <= checkvalue.A_final)
 				{
 					return "A";
 				}
-				else if (final < checkvalue.A_final && final > checkvalue.B_final)
+				else if (final > checkvalue.A_final && final <= checkvalue.B_final)
 				{
 					return "B";
 				}
-				else if (final < checkvalue.B_final && final > checkvalue.C_final)
+				else if (final > checkvalue.B_final && final <= checkvalue.C_final)
 				{
 					return "C";
 				}
-				else if (final < checkvalue.C_final)
+				else if (final > checkvalue.C_final)
 				{
 					return "D";
 				}

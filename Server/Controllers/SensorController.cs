@@ -39,7 +39,7 @@ namespace Server.Controllers
 				////main화면 물체 감지 상태로 변경
 				await _hubContext.Clients.All.SendAsync("DetectState", name, "detected"); //name으로 변경 해야함***********
 
-				if (name == "INPUT_IR_SENSOR") //나중에 수정해야함
+				if (name == "INPUT_IR_SENSOR")
                 {
 
 					await LotidCreate(); //lot id , 씨리얼 부여  //lot id, 씨리얼 를 이용하여 DB에 데이터 생성
@@ -57,15 +57,22 @@ namespace Server.Controllers
             {
 				////main화면 물체 없음 상태로 변경
 				await _hubContext.Clients.All.SendAsync("DetectState", name, "noting");
+                
+                if(await getGrade(name) == "D")
+				{
+					////버튼 초기화
+					await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
+					//화면 초기화
+					await _hubContext.Clients.All.SendAsync("SetList", "reload");
+				}
 			}
             //종료
-            else if(state == "finalEnd")
+            else if(state == "END_TIME")
             {
 				await updateEndtime(); // 전체공정 end time 저장
 
                 ////버튼 초기화
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
-
 				//화면 초기화
 				await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
@@ -172,6 +179,46 @@ namespace Server.Controllers
 
             }
         }
+
+        //등외 판정 확인
+        public async Task<string> getGrade(string name) //Lot Id 부여 (데이터 생성)
+        {
+			//Lot Id를 이용햐여 데이터 불러오기 (마지막에 생성된 DB값)
+			string lotid = ""; //임시
+			int serial = 0; //임시
+			if (ProcessDB.Total_historyModel.Any()) // 컬렉션이 비어있지 않은지 확인
+			{
+				var lastData = ProcessDB.Total_historyModel.OrderBy(item => item.idx).Last();
+				lotid = lastData.lot_id;
+				serial = lastData.serial;
+			}
+
+			if (name == "IMAGE_IR_SENSOR")
+            {
+				var getgrade = ProcessDB.Process1Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+				return getgrade.grade;
+            }
+			else if (name == "SONIC_IR_SENSOR_NO2")
+            {
+				var getgrade = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+				return getgrade.grade;
+			}
+            else if (name == "RELAY_IR_SENSOR")
+            {
+				var getgrade = ProcessDB.Process3Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+				return getgrade.grade;
+			}
+            else if (name == "LIGHT_IR_SENSOR")
+            {
+				var getgrade = ProcessDB.Process4Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
+				return getgrade.grade;
+			}
+            else
+            {
+				return "error";
+			}
+        }
+			
 
 	}
 }
