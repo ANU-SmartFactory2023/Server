@@ -73,7 +73,6 @@ namespace Server.Controllers
 
                 ////버튼 초기화
 				await _hubContext.Clients.All.SendAsync("ActivateButton", "endbutton");
-
 				//화면 초기화
 				await _hubContext.Clients.All.SendAsync("SetList", "reload");
 
