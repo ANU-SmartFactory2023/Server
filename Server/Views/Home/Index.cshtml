@@ -174,8 +174,8 @@
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>산화공정_IDX</th>');
 			newWindow.document.write('<th>포토공정_IDX</th>');
-			newWindow.document.write('<th>증착공정_IDX</th>');
-			newWindow.document.write('<th>패키지공정_IDX</th>');
+			newWindow.document.write('<th>EDS공정_IDX</th>');
+			newWindow.document.write('<th>EUV공정_IDX</th>');
 			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 	// 데이터를 역순으로 반복하여 출력
@@ -263,8 +263,8 @@
 	}
 		newWindow.document.write('</table>');
 
-		} else if (dataType === '증착 공정') {
-			newWindow.document.write('<h2>증착 공정 데이터</h2>');
+		} else if (dataType === 'EDS 공정') {
+			newWindow.document.write('<h2>EDS 공정 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
@@ -295,8 +295,8 @@
 	}
 		newWindow.document.write('</table>');
 
-		} else if (dataType === '패키지 공정') {
-			newWindow.document.write('<h2>패키지 공정 데이터</h2>');
+		} else if (dataType === 'EUV 공정') {
+			newWindow.document.write('<h2>EUV 공정 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
@@ -1370,8 +1370,8 @@
 	<div class="dropdown-content">
 		<div>산화 공정</div>
 		<div>포토 공정</div>
-		<div>증착 공정</div>
-		<div>패키지 공정</div>
+		<div>EDS 공정</div>
+		<div>EUV 공정</div>
 	</div>
 </divbutton>
 <divbutton button class="changeButton" onclick="openNewWindow('change', 900, 900)">기준 값 변경</divbutton>
