@@ -196,22 +196,50 @@ namespace Server.Controllers
 			if (name == "IMAGE_IR_SENSOR")
             {
 				var getgrade = ProcessDB.Process1Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
-				return getgrade.grade;
+                if(getgrade == null || getgrade.grade == null)
+                {
+                    return "null";
+                }
+                else
+                {
+					return getgrade.grade;
+				}
             }
 			else if (name == "SONIC_IR_SENSOR_NO2")
             {
 				var getgrade = ProcessDB.Process2Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
-				return getgrade.grade;
+				if (getgrade == null || getgrade.grade == null)
+				{
+					return "null";
+				}
+				else
+				{
+					return getgrade.grade;
+				}
 			}
             else if (name == "RELAY_IR_SENSOR")
             {
 				var getgrade = ProcessDB.Process3Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
-				return getgrade.grade;
+				if (getgrade == null || getgrade.grade == null)
+				{
+					return "null";
+				}
+				else
+				{
+					return getgrade.grade;
+				}
 			}
             else if (name == "LIGHT_IR_SENSOR")
             {
 				var getgrade = ProcessDB.Process4Model.FirstOrDefault(x => x.lot_id == lotid && x.serial == serial);
-				return getgrade.grade;
+				if (getgrade == null || getgrade.grade == null)
+				{
+					return "null";
+				}
+				else
+				{
+					return getgrade.grade;
+				}
 			}
             else
             {

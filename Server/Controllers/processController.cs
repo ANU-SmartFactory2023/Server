@@ -358,65 +358,6 @@ namespace Server.Controllers
             ProcessDB.Update(updateData);
             await ProcessDB.SaveChangesAsync();
         }
-		//기준값 비교  //true가 불량품
-		//public async Task<bool> chackReference(int id, double value)
-		//{
-		//	var checkvalue = ProcessDB.ReferenceModel.FirstOrDefault();
-		//          if( checkvalue == null)
-		//          {
-		//              return false;
-		//          }
-
-		//          if (id == 1)
-		//          {
-
-		//		if (value > checkvalue.bottom1)
-		//              {
-		//                  return false; //불량
-		//              }
-		//              else
-		//              {
-		//                  return true; //양품
-		//              }
-		//	}
-		//          else if (id == 2)
-		//          {
-		//		if (value > checkvalue.bottom2)
-		//		{
-		//			return false; //불량
-		//		}
-		//		else
-		//		{
-		//			return true; //양품
-		//		}
-		//	}
-		//          else if(id == 3)
-		//          {
-		//		if (value > checkvalue.bottom3)
-		//		{
-		//			return false; //불량
-		//		}
-		//		else
-		//		{
-		//			return true; //양품
-		//		}
-		//	}
-		//          else if(id == 4)
-		//          {
-		//              //4공정 등급체크시 전체등급체크를 해야하나? 아니면 함수를 따로 만들까??
-		//		if (value > checkvalue.bottom4)
-		//		{
-		//			return false; //불량
-		//		}
-		//		else
-		//		{
-		//			return true; //양품
-		//		}
-
-		//	}
-
-		//          return false;
-		//}
 		//각 공정 등급 판단
 		public async Task<string> chackGrade(int id, double value)
 		{
@@ -426,17 +367,17 @@ namespace Server.Controllers
 				return "error";
 			}
 
-			if (id == 1)
+			if (id == 1) //이상 불량
 			{
 				if(value <= checkvalue.top1)
 				{
 					return "A";
 				}
-				else if(value > checkvalue.top1 && value <= checkvalue.mid1)
+				else if(value <= checkvalue.mid1 && value > checkvalue.top1)
 				{ 
 					return "B"; 
 				}
-				else if(value > checkvalue.mid1 && value <= checkvalue.bottom1)
+				else if(value <= checkvalue.bottom1 && value > checkvalue.mid1 )
 				{
 					return "C";
 				}
@@ -449,21 +390,21 @@ namespace Server.Controllers
 					return "error";
 				}
 			}
-			else if (id == 2) //크다 작다 바꿔야할 수도 있음
+			else if (id == 2) //이하 불량
 			{
-				if (value <= checkvalue.top2)
+				if (value >= checkvalue.top2)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top2 && value <= checkvalue.mid2)
+				else if (value < checkvalue.top2 && value >= checkvalue.mid2)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid2 && value <= checkvalue.bottom2)
+				else if (value < checkvalue.mid2 && value >= checkvalue.bottom2)
 				{
 					return "C";
 				}
-				else if (value > checkvalue.bottom2)
+				else if (value < checkvalue.bottom2)
 				{
 					return "D"; //불량
 				}
@@ -474,19 +415,19 @@ namespace Server.Controllers
 			}
 			else if (id == 3) //크다 작다 바꿔야할 수도 있음
 			{
-				if (value <= checkvalue.top3)
+				if (value >= checkvalue.top3)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top3 && value <= checkvalue.mid3)
+				else if (value < checkvalue.top3 && value >= checkvalue.mid3)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid3 && value <= checkvalue.bottom3)
+				else if (value < checkvalue.mid3 && value > checkvalue.bottom3)
 				{
 					return "C";
 				}
-				else if (value > checkvalue.bottom3)
+				else if (value <= checkvalue.bottom3)
 				{
 					return "D"; //불량
 				}
@@ -497,19 +438,19 @@ namespace Server.Controllers
 			}
 			else if (id == 4) //크다 작다 바꿔야할 수도 있음
 			{
-				if (value <= checkvalue.top4)
+				if (value < checkvalue.top4)
 				{
 					return "A";
 				}
-				else if (value > checkvalue.top4 && value <= checkvalue.mid4)
+				else if (value >= checkvalue.top4 && value < checkvalue.mid4)
 				{
 					return "B";
 				}
-				else if (value > checkvalue.mid4 && value <= checkvalue.bottom4)
+				else if (value >= checkvalue.mid4 && value < checkvalue.bottom4)
 				{
 					return "C";
 				}
-				else if (value > checkvalue.bottom4)
+				else if (value >= checkvalue.bottom4)
 				{
 					return "D"; //불량
 				}
