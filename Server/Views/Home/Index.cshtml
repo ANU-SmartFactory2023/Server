@@ -174,8 +174,8 @@
 			newWindow.document.write('<th>소요 시간</th>');
 			newWindow.document.write('<th>산화공정_IDX</th>');
 			newWindow.document.write('<th>포토공정_IDX</th>');
-			newWindow.document.write('<th>증착공정_IDX</th>');
-			newWindow.document.write('<th>패키지공정_IDX</th>');
+			newWindow.document.write('<th>EDS공정_IDX</th>');
+			newWindow.document.write('<th>EUV공정_IDX</th>');
 			newWindow.document.write('<th>등급</th>');
 			newWindow.document.write('</tr>');
 	// 데이터를 역순으로 반복하여 출력
@@ -263,8 +263,8 @@
 	}
 		newWindow.document.write('</table>');
 
-		} else if (dataType === '증착 공정') {
-			newWindow.document.write('<h2>증착 공정 데이터</h2>');
+		} else if (dataType === 'EDS 공정') {
+			newWindow.document.write('<h2>EDS 공정 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
@@ -295,8 +295,8 @@
 	}
 		newWindow.document.write('</table>');
 
-		} else if (dataType === '패키지 공정') {
-			newWindow.document.write('<h2>패키지 공정 데이터</h2>');
+		} else if (dataType === 'EUV 공정') {
+			newWindow.document.write('<h2>EUV 공정 데이터</h2>');
 			// 서버에서 받아온 데이터를 HTML 테이블로 출력합니다.
 			newWindow.document.write('<table>');
 			newWindow.document.write('<tr>');
@@ -346,8 +346,54 @@
 						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 기준';
 					} else if (Linename == "direction") {
 						label = '최종 ' + String.fromCharCode(65 + i - 1) + ' 방향';
-					} else {
-						label = 'Sensor' + ((i <= 4) ? i : i - 4);
+					} else if (Linename == "top") {
+						if (i == 1) {
+							label = '회로인쇄율 A(이하)';
+						}
+						else if (i == 2) {
+							label = '단차 A(이상)';
+						}
+						else if (i == 3){
+							label = '전도성 A(이상)';
+						}
+						else if (i == 4) {
+							label = '반사율 A(이하)';
+						}
+						else{
+
+						}
+					} else if (Linename == "mid") {
+						if (i == 1) {
+							label = '회로인쇄율 B(이하)';
+						}
+						else if (i == 2) {
+							label = '단차 B(이상)';
+						}
+						else if (i == 3) {
+							label = '전도성 B(이상)';
+						}
+						else if (i == 4) {
+							label = '반사율 B(이하)';
+						}
+						else {
+
+						}
+					} else if (Linename == "bottom") {
+						if (i == 1) {
+							label = '회로인쇄율 (이상)';
+						}
+						else if (i == 2) {
+							label = '단차 (이하)';
+						}
+						else if (i == 3) {
+							label = '전도성 (이하)';
+						}
+						else if (i == 4) {
+							label = '반사율 (이상)';
+						}
+						else {
+
+						}
 					}
 
 					newWindow.document.write('<div class="box">');
@@ -1307,6 +1353,12 @@
 		.changeButton:hover{
 			transform: scale(0.95); /* hover 상태에서 버튼을 0.95배 축소시킴 */
 		}
+
+	.processValue{
+		font-size: 35px;
+		font-weight: bold;
+		margin-top: 10px;
+	}
 </style>
 <!-- 새 윈도우 페이지 뜨게 하는 코드 -->
 <divbutton button class="totalProductionButton" onclick="openNewWindow('totalProduction', 1000, 600)">전체 생산량</divbutton>
@@ -1318,8 +1370,8 @@
 	<div class="dropdown-content">
 		<div>산화 공정</div>
 		<div>포토 공정</div>
-		<div>증착 공정</div>
-		<div>패키지 공정</div>
+		<div>EDS 공정</div>
+		<div>EUV 공정</div>
 	</div>
 </divbutton>
 <divbutton button class="changeButton" onclick="openNewWindow('change', 900, 900)">기준 값 변경</divbutton>
@@ -1478,8 +1530,23 @@ else
 				var processData3 = Model.process3Data.FirstOrDefault(data => data.lot_id == Model.Total_historyData[Model.Total_historyData.Count - 1].lot_id
 				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
 
-				// processData가 null이면 공백, 아니면 processData.value 출력
-				var valueToShow3 = processData3 != null ? processData3.value.ToString() : string.Empty;
+				// processData가 null이면 공백, 아니면 processData.value에 따라 pass fail 출력
+				var valueToShow3 = string.Empty;
+				if (processData3 != null)
+				{
+					if (processData3.value == 1)
+					{
+						valueToShow3 = "Pass";
+					}
+					else if (processData3.value == 0)
+					{
+						valueToShow3 = "Fail";
+					}
+					else
+					{
+						valueToShow3 = "Error";
+					}
+				}
 			}
 			@valueToShow3
 		</div>
@@ -1494,7 +1561,22 @@ else
 				&& data.serial == @Model.Total_historyData[Model.Total_historyData.Count - 1].serial);
 
 				// processData가 null이면 공백, 아니면 processData.value 출력
-				var valueToShow4 = processData4 != null ? processData4.value.ToString() : string.Empty;
+				var valueToShow4 = string.Empty;
+				if (processData4 != null)
+				{
+					if (processData4.value == 1)
+					{
+						valueToShow4 = "Fail";
+					}
+					else if (processData4.value == 0)
+					{
+						valueToShow4 = "Pass";
+					}
+					else
+					{
+						valueToShow4 = "Error";
+					}
+				}
 			}
 			@valueToShow4
 		</div>
@@ -1797,11 +1879,27 @@ else
 		}
 		else if (name == "eds") {
 			// id에 따라 센서값 화면에 표시
-			document.querySelector('.additionalSubBox7 .processValue').textContent = value;
+			if (value == 1) {
+				document.querySelector('.additionalSubBox7 .processValue').textContent = "pass";
+			}
+			else if( value == 0){
+				document.querySelector('.additionalSubBox7 .processValue').textContent = "fail";
+			}
+			else{
+				document.querySelector('.additionalSubBox7 .processValue').textContent = "error";
+			}
 		}
 		else if (name == "euvLithography") {
 			// id에 따라 센서값 화면에 표시
-			document.querySelector('.additionalSubBox8 .processValue').textContent = value;
+			if (value == 1) {
+				document.querySelector('.additionalSubBox8 .processValue').textContent = "fail";
+			}
+			else if (value == 0) {
+				document.querySelector('.additionalSubBox8 .processValue').textContent = "pass";
+			}
+			else {
+				document.querySelector('.additionalSubBox8 .processValue').textContent = "error";
+			}
 		}
 	});
 	connection.on("SetLotID", function (lotid, serial) {
